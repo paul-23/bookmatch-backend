@@ -69,4 +69,4 @@ VALUES (2, 1, 3, '¿Qué opinas de este libro?', '2023-04-28 10:30:00');
 INSERT INTO messages (id_user_origin, id_user_destiny, id_book, content, sent_date) 
 VALUES (3, 1, 2, 'Te recomiendo este libro', '2023-04-28 11:45:00');
 INSERT INTO messages (id_user_origin, id_user_destiny, id_book, content, sent_date) 
-VALUES (4, 5,
+VALUES (4, 5, 'Me flipa tu libro', '2023-04-28 16:55:00');
