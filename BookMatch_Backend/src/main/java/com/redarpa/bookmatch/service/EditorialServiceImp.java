@@ -3,10 +3,12 @@ package com.redarpa.bookmatch.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.redarpa.bookmatch.dao.IEditorialDAO;
 import com.redarpa.bookmatch.dto.Editorial;
 
+@Service
 public class EditorialServiceImp implements IEditorialService {
 
 	@Autowired

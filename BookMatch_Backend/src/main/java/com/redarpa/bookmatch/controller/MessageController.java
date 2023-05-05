@@ -7,14 +7,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Message;
-import com.redarpa.bookmatch.service.BookServiceImp;
 import com.redarpa.bookmatch.service.MessageServiceImp;
 
+@RestController
+@RequestMapping("/api")
 public class MessageController {
 
 	@Autowired
@@ -40,26 +41,6 @@ public class MessageController {
 		System.out.println("Message by Id: " + messageById);
 
 		return messageById;
-	}
-
-	@PutMapping("/messages/{id}")
-	public Message updateMessage(@PathVariable(name = "id") Long id, @RequestBody Message message) {
-
-		Message selectedMessage = new Message();
-		Message updatedMessage = new Message();
-
-		selectedMessage = messageServiceImp.messageById(id);
-
-		selectedMessage.setContent(message.getContent());
-		selectedMessage.setId_book(message.getId_book());
-		selectedMessage.setId_user_origin(message.getId_user_origin());
-		selectedMessage.setId_user_destiny(message.getId_user_destiny());
-
-		updatedMessage = messageServiceImp.updateMessage(selectedMessage);
-
-		System.out.println("Updated message is: " + updatedMessage);
-
-		return updatedMessage;
 	}
 
 	@DeleteMapping("/messages/{id}")

@@ -3,11 +3,14 @@ package com.redarpa.bookmatch.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.redarpa.bookmatch.dao.IBookDAO;
 import com.redarpa.bookmatch.dto.Book;
 
+@Service
 public class BookServiceImp implements IBookService {
+	
 	@Autowired
 	IBookDAO iBookDAO;
 

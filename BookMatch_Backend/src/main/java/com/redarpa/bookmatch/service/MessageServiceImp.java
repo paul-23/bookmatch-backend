@@ -3,10 +3,12 @@ package com.redarpa.bookmatch.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.redarpa.bookmatch.dao.IMessageDAO;
 import com.redarpa.bookmatch.dto.Message;
 
+@Service
 public class MessageServiceImp implements IMessageService {
 	
 	@Autowired

@@ -23,16 +23,22 @@ public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_book;
+	
 	@Column(name = "author")
 	private String author;
+	
 	@Column(name = "title")
 	private String title;
+	
 	@Column(name = "isbn")
 	private String isbn;
+	
 	@Column(name = "category")
 	private String category;
+	
 	@Column(name = "rating_total")
 	private double rating_total;
+	
 	@Column(name = "num_ratings")
 	private double num_ratings;
 
