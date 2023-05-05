@@ -9,7 +9,7 @@ email varchar(50) DEFAULT NULL,
 pass varchar(50) DEFAULT NULL
 );
 
-CREATE TABLE editorial (
+CREATE TABLE editorials (
 id_editorial int AUTO_INCREMENT PRIMARY KEY,
 name_editorial varchar(250) DEFAULT NULL
 );
@@ -25,7 +25,7 @@ category VARCHAR(50),
 id_user int DEFAULT NULL,
 CONSTRAINT user_FK FOREIGN KEY (id_user) REFERENCES users (id_user),
 id_editorial int DEFAULT NULL,
-CONSTRAINT editorial_FK FOREIGN KEY (id_editorial) REFERENCES editorial (id_editorial)
+CONSTRAINT editorial_FK FOREIGN KEY (id_editorial) REFERENCES editorials (id_editorial)
 );
 
 CREATE TABLE messages (
@@ -46,11 +46,11 @@ INSERT INTO users (username, email, pass) VALUES ('pedro789', 'pedro@example.com
 INSERT INTO users (username, email, pass) VALUES ('laura101', 'laura@example.com', 'pass101');
 INSERT INTO users (username, email, pass) VALUES ('carlos2022', 'carlos@example.com', 'pass2022');
 
-INSERT INTO editorial (name_editorial) VALUES ('Editorial Alfaguara');
-INSERT INTO editorial (name_editorial) VALUES ('Editorial Planeta');
-INSERT INTO editorial (name_editorial) VALUES ('Editorial Tusquets');
-INSERT INTO editorial (name_editorial) VALUES ('Editorial Anagrama');
-INSERT INTO editorial (name_editorial) VALUES ('Editorial Destino');
+INSERT INTO editorials (name_editorial) VALUES ('Editorial Alfaguara');
+INSERT INTO editorials (name_editorial) VALUES ('Editorial Planeta');
+INSERT INTO editorials (name_editorial) VALUES ('Editorial Tusquets');
+INSERT INTO editorials (name_editorial) VALUES ('Editorial Anagrama');
+INSERT INTO editorials (name_editorial) VALUES ('Editorial Destino');
 
 INSERT INTO books (author, title, isbn, rating_total, num_ratings, category, id_user, id_editorial) 
 VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '978-987-740-339-9', 8, 2, 'Novela', 1, 2);
@@ -70,4 +70,4 @@ VALUES (2, 1, 3, '¿Qué opinas de este libro?', '2023-04-28 10:30:00');
 INSERT INTO messages (id_user_origin, id_user_destiny, id_book, content, sent_date) 
 VALUES (3, 1, 2, 'Te recomiendo este libro', '2023-04-28 11:45:00');
 INSERT INTO messages (id_user_origin, id_user_destiny, id_book, content, sent_date) 
-VALUES (4, 5, 'Me flipa tu libro', '2023-04-28 16:55:00');
+VALUES (4, 5, 2, 'Me flipa tu libro', '2023-04-28 16:55:00');
