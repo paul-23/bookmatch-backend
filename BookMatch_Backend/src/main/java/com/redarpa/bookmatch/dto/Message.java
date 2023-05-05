@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
 @Entity
@@ -44,7 +44,6 @@ public class Message {
 	}
 
 	public Message(Long id_message, String content, Book book, User userOrigin, User userDestiny) {
-		super();
 		this.id_message = id_message;
 		this.content = content;
 		this.book = book;

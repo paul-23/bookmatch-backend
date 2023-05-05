@@ -14,12 +14,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
 @Entity
@@ -29,6 +28,7 @@ public class Editorial {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_editorial;
+	
 	@Column(name = "name_editorial")
 	private String name_editorial;
 
@@ -41,7 +41,6 @@ public class Editorial {
 	}
 
 	public Editorial(Long id_editorial, String name_editorial, List<Book> book) {
-		super();
 		this.id_editorial = id_editorial;
 		this.name_editorial = name_editorial;
 		this.book = book;

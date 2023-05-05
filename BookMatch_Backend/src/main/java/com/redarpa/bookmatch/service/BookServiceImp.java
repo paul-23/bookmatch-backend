@@ -38,5 +38,4 @@ public class BookServiceImp implements IBookService {
 	public void deleteBook(Long id) {
 		iBookDAO.deleteById(id);
 	}
-	
 }

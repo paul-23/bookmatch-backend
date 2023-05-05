@@ -3,17 +3,23 @@
  */
 package com.redarpa.bookmatch.dto;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
 @Entity
@@ -36,11 +42,11 @@ public class Book {
 	@Column(name = "category")
 	private String category;
 	
-	@Column(name = "rating_total")
-	private double rating_total;
+	@Column(name = "cover_image")
+	private byte[] cover_image;
 	
-	@Column(name = "num_ratings")
-	private double num_ratings;
+	@Column(name = "aviable")
+	private boolean aviable;
 
 	@ManyToOne
 	@JoinColumn(name = "id_user")
@@ -49,23 +55,43 @@ public class Book {
 	@ManyToOne
 	@JoinColumn(name = "id_editorial")
 	private Editorial editorial;
+	
+	@OneToMany
+	@JoinColumn(name = "id_rating")
+	private List<Rating> rating;
 
 	public Book() {
 
 	}
 
-	public Book(Long id_book, String author, String title, String isbn, String category, double rating_total,
-			double num_ratings, User user, Editorial editorial) {
-		super();
+	public Book(Long id_book, String author, String title, String isbn, String category, byte[] cover_image,
+			boolean aviable, User user, Editorial editorial, List<Rating> rating) {
 		this.id_book = id_book;
 		this.author = author;
 		this.title = title;
 		this.isbn = isbn;
 		this.category = category;
-		this.rating_total = rating_total;
-		this.num_ratings = num_ratings;
+		this.cover_image = cover_image;
+		this.aviable = aviable;
 		this.user = user;
 		this.editorial = editorial;
+		this.rating = rating;
+	}
+
+	public byte[] getCover_image() {
+		return cover_image;
+	}
+
+	public void setCover_image(byte[] cover_image) {
+		this.cover_image = cover_image;
+	}
+
+	public boolean getAviable() {
+		return aviable;
+	}
+
+	public void setAviable(boolean aviable) {
+		this.aviable = aviable;
 	}
 
 	public Long getId_book() {
@@ -108,22 +134,6 @@ public class Book {
 		this.category = category;
 	}
 
-	public double getRating_total() {
-		return rating_total;
-	}
-
-	public void setRating_total(double rating_total) {
-		this.rating_total = rating_total;
-	}
-
-	public double getNum_ratings() {
-		return num_ratings;
-	}
-
-	public void setNum_ratings(double num_ratings) {
-		this.num_ratings = num_ratings;
-	}
-
 	public User getUser() {
 		return user;
 	}
@@ -138,6 +148,16 @@ public class Book {
 
 	public void setEditorial(Editorial editorial) {
 		this.editorial = editorial;
+	}
+	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "Ratings")
+	public List<Rating> getRating() {
+		return rating;
+	}
+
+	public void setRating(List<Rating> rating) {
+		this.rating = rating;
 	}
 
 }

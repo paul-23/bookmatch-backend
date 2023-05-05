@@ -5,6 +5,7 @@ USE proyecto;
 CREATE TABLE users (
 id_user int AUTO_INCREMENT PRIMARY KEY,
 username varchar(50) DEFAULT NULL,
+profile_image LONGBLOB DEFAULT NULL,
 email varchar(50) DEFAULT NULL,
 pass varchar(50) DEFAULT NULL
 );
@@ -19,13 +20,23 @@ id_book int AUTO_INCREMENT PRIMARY KEY,
 author varchar(250) DEFAULT NULL,
 title varchar(250) DEFAULT NULL,
 isbn varchar(20) DEFAULT NULL,
-rating_total int DEFAULT NULL,
-num_ratings int DEFAULT NULL,
-category VARCHAR(50),
+category VARCHAR(50) DEFAULT NULL,
+cover_image LONGBLOB DEFAULT NULL,
+aviable BOOLEAN DEFAULT true,
 id_user int DEFAULT NULL,
 CONSTRAINT user_FK FOREIGN KEY (id_user) REFERENCES users (id_user),
 id_editorial int DEFAULT NULL,
 CONSTRAINT editorial_FK FOREIGN KEY (id_editorial) REFERENCES editorials (id_editorial)
+);
+
+CREATE TABLE ratings (
+id_rating int AUTO_INCREMENT PRIMARY KEY,
+id_user_rating int,
+CONSTRAINT id_user_fk FOREIGN KEY (id_user_rating) REFERENCES users (id_user),
+id_book_rating int,
+CONSTRAINT id_book_fk FOREIGN KEY (id_book_rating) REFERENCES books (id_book),
+rating int,
+coment VARCHAR(255) DEFAULT NULL
 );
 
 CREATE TABLE messages (
@@ -52,16 +63,25 @@ INSERT INTO editorials (name_editorial) VALUES ('Editorial Tusquets');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Anagrama');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Destino');
 
-INSERT INTO books (author, title, isbn, rating_total, num_ratings, category, id_user, id_editorial) 
-VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '978-987-740-339-9', 8, 2, 'Novela', 1, 2);
-INSERT INTO books (author, title, isbn, rating_total, num_ratings, category, id_user, id_editorial) 
-VALUES ('Isabel Allende', 'La casa de los espíritus', '978-84-9658-358-9', 10, 2, 'Novela', 2, 1);
-INSERT INTO books (author, title, isbn, rating_total, num_ratings, category, id_user, id_editorial) 
-VALUES ('Mario Vargas Llosa', 'La fiesta del chivo', '978-84-8346-582-1', 14, 3, 'Novela', 3, 3);
-INSERT INTO books (author, title, isbn, rating_total, num_ratings, category, id_user, id_editorial) 
-VALUES ('Julio Cortázar', 'Rayuela', '978-987-1220-72-6', 18, 4, 'Novela', 4, 4);
-INSERT INTO books (author, title, isbn, rating_total, num_ratings, category, id_user, id_editorial) 
-VALUES ('Jorge Luis Borges', 'Ficciones', '978-987-738-108-5', 15, 3, 'Cuento', 5, 5);
+INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
+VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '978-987-740-339-9', 'Novela', 1, 2);
+INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
+VALUES ('Isabel Allende', 'La casa de los espíritus', '978-84-9658-358-9', 'Novela', 2, 1);
+INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
+VALUES ('Mario Vargas Llosa', 'La fiesta del chivo', '978-84-8346-582-1', 'Novela', 3, 3);
+INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
+VALUES ('Julio Cortázar', 'Rayuela', '978-987-1220-72-6', 'Novela', 4, 4);
+INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
+VALUES ('Jorge Luis Borges', 'Ficciones', '978-987-738-108-5', 'Cuento', 5, 5);
+
+INSERT INTO ratings (id_user_rating, id_book_rating, rating)
+VALUES(1, 2, 5);
+INSERT INTO ratings (id_user_rating, id_book_rating, rating)
+VALUES(2, 1, 5);
+INSERT INTO ratings (id_user_rating, id_book_rating, rating)
+VALUES(3, 3, 4);
+INSERT INTO ratings (id_user_rating, id_book_rating, rating)
+VALUES(4, 4, 3);
 
 INSERT INTO messages (id_user_origin, id_user_destiny, id_book, content, sent_date) 
 VALUES (1, 2, 1, 'Hola, ¿qué tal?', '2023-04-28 09:00:00');

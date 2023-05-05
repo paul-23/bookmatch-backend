@@ -18,7 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
 @Entity
@@ -28,33 +28,53 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id_user;
+
 	@Column(name = "username")
 	private String username;
+
 	@Column(name = "email")
 	private String email;
+
 	@Column(name = "pass")
 	private String pass;
+
+	@Column(name = "profile_image")
+	private byte[] profile_image;
 
 	@OneToMany
 	@JoinColumn(name = "id_book")
 	private List<Book> book;
-	
+
 	@OneToMany
 	@JoinColumn(name = "id_message")
 	private List<Message> message;
+	
+	@OneToMany
+	@JoinColumn(name = "id_rating")
+	private List<Rating> rating;
 
 	public User() {
 
 	}
 
-	public User(Long id_user, String username, String email, String pass, List<Book> book, List<Message> message) {
-		super();
+	public User(Long id_user, String username, String email, String pass, byte[] profile_image, List<Book> book,
+			List<Message> message, List<Rating> rating) {
 		this.id_user = id_user;
 		this.username = username;
 		this.email = email;
 		this.pass = pass;
+		this.profile_image = profile_image;
 		this.book = book;
 		this.message = message;
+		this.rating = rating;
+	}
+
+	public byte[] getProfile_image() {
+		return profile_image;
+	}
+
+	public void setProfile_image(byte[] profile_image) {
+		this.profile_image = profile_image;
 	}
 
 	public Long getId_user() {
@@ -96,7 +116,7 @@ public class User {
 	}
 
 	public void setBook(List<Book> book) {
-		this.book = book;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+		this.book = book;
 	}
 
 	@JsonIgnore
@@ -109,6 +129,14 @@ public class User {
 		this.message = message;
 	}
 
-	
-	
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "Ratings")
+	public List<Rating> getRating() {
+		return rating;
+	}
+
+	public void setRating(List<Rating> rating) {
+		this.rating = rating;
+	}
+
 }
