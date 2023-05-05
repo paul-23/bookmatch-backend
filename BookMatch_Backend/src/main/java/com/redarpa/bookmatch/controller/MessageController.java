@@ -22,7 +22,7 @@ public class MessageController {
 
 	@GetMapping("/messages")
 	public List<Message> listMessages() {
-		return messageServiceImp.list();
+		return messageServiceImp.listAllMessages();
 	}
 
 	@PostMapping("/messages")
