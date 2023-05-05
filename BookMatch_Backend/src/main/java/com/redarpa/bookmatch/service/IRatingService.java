@@ -2,6 +2,7 @@ package com.redarpa.bookmatch.service;
 
 import java.util.List;
 
+import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
 
 public interface IRatingService {
@@ -14,4 +15,6 @@ public interface IRatingService {
 	public Rating updateRating(Rating rating); //Update rating
 	
 	public void deleteRating(Long id); //Delete a rating
+
+	Double getAverageRating(Book book);
 }

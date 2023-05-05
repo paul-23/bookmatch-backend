@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.redarpa.bookmatch.dao.IRatingDAO;
+import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
 
 @Service
@@ -38,5 +39,18 @@ public class RatingServiceImp implements IRatingService {
 	public void deleteRating(Long id) {
 		iRatingDAO.deleteById(id);
 	}
+	
+	@Override
+    public Double getAverageRating(Book book) {
+        List<Rating> ratings = iRatingDAO.findByBookRating(book);
+        if (ratings.isEmpty()) {
+            return null;
+        }
+        Double averageRating = ratings.stream()
+                .mapToLong(Rating::getRating)
+                .average()
+                .orElse(0.0);
+        return averageRating;
+    }
 	
 }

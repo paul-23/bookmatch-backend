@@ -23,7 +23,7 @@ public class Rating {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_rating")
-	private Integer idRating;
+	private Long idRating;
 
 	@ManyToOne
 	@JoinColumn(name = "id_user_rating")
@@ -34,7 +34,7 @@ public class Rating {
 	private Book bookRating;
 
 	@Column(name = "rating")
-	private Integer rating;
+	private Long rating;
 
 	@Column(name = "coment")
 	private String comment;
@@ -43,7 +43,7 @@ public class Rating {
 		
 	}
 
-	public Rating(Integer idRating, User userRating, Book bookRating, Integer rating, String comment) {
+	public Rating(Long idRating, User userRating, Book bookRating, Long rating, String comment) {
 		this.idRating = idRating;
 		this.userRating = userRating;
 		this.bookRating = bookRating;
@@ -51,11 +51,11 @@ public class Rating {
 		this.comment = comment;
 	}
 
-	public Integer getIdRating() {
+	public Long getIdRating() {
 		return idRating;
 	}
 
-	public void setIdRating(Integer idRating) {
+	public void setIdRating(Long idRating) {
 		this.idRating = idRating;
 	}
 
@@ -70,16 +70,16 @@ public class Rating {
 	public Book getBookRating() {
 		return bookRating;
 	}
-
+	
 	public void setBookRating(Book bookRating) {
 		this.bookRating = bookRating;
 	}
 
-	public Integer getRating() {
+	public Long getRating() {
 		return rating;
 	}
 
-	public void setRating(Integer rating) {
+	public void setRating(Long rating) {
 		this.rating = rating;
 	}
 

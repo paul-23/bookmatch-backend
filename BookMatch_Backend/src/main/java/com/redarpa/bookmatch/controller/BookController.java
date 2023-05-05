@@ -3,6 +3,7 @@ package com.redarpa.bookmatch.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.service.BookServiceImp;
+import com.redarpa.bookmatch.service.RatingServiceImp;
 
 /**
  * @author RedArpa - BookMatch
@@ -25,6 +27,9 @@ public class BookController {
 
 	@Autowired
 	BookServiceImp bookServiceImp;
+	
+	@Autowired
+	RatingServiceImp ratingServiceImp;
 
 	@GetMapping("/books")
 	public List<Book> listBooks() {
