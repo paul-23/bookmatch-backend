@@ -39,13 +39,13 @@ public class EditorialController {
 
 		editorialById = editorialServiceImp.editorialById(id);
 
-		System.out.println("Book by Id: " + editorialById);
+		System.out.println("Editorial by Id: " + editorialById);
 
 		return editorialById;
 	}
 
 	@PutMapping("/editorials/{id}")
-	public Editorial updateBook(@PathVariable(name = "id") Long id, @RequestBody Editorial editorial) {
+	public Editorial updateEditorial(@PathVariable(name = "id") Long id, @RequestBody Editorial editorial) {
 
 		Editorial selectedEditorial = new Editorial();
 		Editorial updatedEditorial = new Editorial();
@@ -63,7 +63,7 @@ public class EditorialController {
 	}
 
 	@DeleteMapping("/editorial/{id}")
-	public void deleteBook(@PathVariable(name = "id") Long id) {
+	public void deleteEditorial(@PathVariable(name = "id") Long id) {
 		editorialServiceImp.deleteEditorial(id);
 	}
 
