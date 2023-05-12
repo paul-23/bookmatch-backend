@@ -63,9 +63,20 @@ public class Book {
 	public Book() {
 
 	}
-
+	
+	public Book(String author, String title, String isbn, String category,
+			boolean aviable, User user, Editorial editorial) {
+		this.author = author;
+		this.title = title;
+		this.isbn = isbn;
+		this.category = category;
+		this.aviable = aviable;
+		this.user = user;
+		this.editorial = editorial;
+	}
+	
 	public Book(Long id_book, String author, String title, String isbn, String category, byte[] cover_image,
-			boolean aviable, User user, Editorial editorial, List<Rating> rating) {
+			boolean aviable, User user, Editorial editorial) {
 		this.id_book = id_book;
 		this.author = author;
 		this.title = title;
@@ -75,7 +86,6 @@ public class Book {
 		this.aviable = aviable;
 		this.user = user;
 		this.editorial = editorial;
-		this.rating = rating;
 	}
 
 	public byte[] getCover_image() {

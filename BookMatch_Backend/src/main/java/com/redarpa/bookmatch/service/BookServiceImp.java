@@ -38,4 +38,8 @@ public class BookServiceImp implements IBookService {
 	public void deleteBook(Long id) {
 		iBookDAO.deleteById(id);
 	}
+	
+	public Book saveImage(Book book) {
+		return iBookDAO.save(book);
+	}
 }
