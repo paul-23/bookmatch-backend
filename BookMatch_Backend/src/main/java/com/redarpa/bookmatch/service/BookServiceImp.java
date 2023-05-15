@@ -28,6 +28,11 @@ public class BookServiceImp implements IBookService {
 	public Book bookById(Long id) {
 		return iBookDAO.findById(id).get();
 	}
+	
+	@Override
+	public Book bookByIsbn(String isbn) {
+		return iBookDAO.findBookByIsbn(isbn);
+	}
 
 	@Override
 	public Book updateBook(Book book) {

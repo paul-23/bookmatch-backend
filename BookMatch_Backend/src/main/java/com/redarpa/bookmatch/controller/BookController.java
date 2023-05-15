@@ -152,5 +152,18 @@ public class BookController {
 	public void deleteBook(@PathVariable(name = "id") Long id) {
 		bookServiceImp.deleteBook(id);
 	}
+	
+	@GetMapping("/book/isbn/{isbn}")
+	public Book bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
+
+		Book bookByIsbn = new Book();
+		bookByIsbn = bookServiceImp.bookByIsbn(isbn);
+		
+		/*if (bookByIsbn.getCover_image() == null || bookById.getCover_image().equals(null) || bookById.getCover_image().equals("")) {
+			saveCoverByBookISBN(bookById.getId_book(), bookById.getIsbn());
+		}*/
+
+		return bookByIsbn;
+	}
 
 }

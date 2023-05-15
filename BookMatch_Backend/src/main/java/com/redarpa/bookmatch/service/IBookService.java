@@ -11,6 +11,8 @@ public interface IBookService {
 	
 	public Book bookById(Long id); //Read book data
 	
+	public Book bookByIsbn(String isbn); //Read by ISBN
+	
 	public Book updateBook(Book book); //Update book
 	
 	public void deleteBook(Long id); //Delete a book
