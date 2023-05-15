@@ -49,18 +49,23 @@ public class BookController {
 	public Book saveBook(@RequestBody Book book) {
 		return bookServiceImp.saveBook(book);
 	}
-
+	
 	@GetMapping("/book/{id}")
 	public Book bookById(@PathVariable(name = "id") Long id) throws IOException {
 
 		Book bookById = new Book();
 		bookById = bookServiceImp.bookById(id);
-		
-		if (bookById.getCover_image() == null || bookById.getCover_image().equals(null) || bookById.getCover_image().equals("")) {
-			saveCoverByBookISBN(bookById.getId_book(), bookById.getIsbn());
-		}
+
+		checkCover(bookById);
 
 		return bookById;
+	}
+	
+	
+	public void checkCover(Book book) {
+		if (book.getCover_image() == null || book.getCover_image().equals(null) || book.getCover_image().equals("")) {
+			saveCoverByBookISBN(book.getId_book(), book.getIsbn());
+		}
 	}
 
 	@GetMapping("book/image/{id}")
