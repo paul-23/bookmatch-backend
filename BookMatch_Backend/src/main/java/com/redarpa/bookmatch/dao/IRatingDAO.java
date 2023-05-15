@@ -9,4 +9,5 @@ import com.redarpa.bookmatch.dto.Rating;
 
 public interface IRatingDAO extends JpaRepository<Rating, Long> {
 	List<Rating> findByBookRating(Book bookRating);
+//	List<Rating> findByBookRating(Long bookId);
 }

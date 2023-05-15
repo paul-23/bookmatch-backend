@@ -53,4 +53,11 @@ public class RatingServiceImp implements IRatingService {
         return averageRating;
     }
 	
+	@Override 
+	public List<Rating> getRatingsByBookId(Book book){
+		
+		return iRatingDAO.findByBookRating(book);
+		
+	}
+	
 }

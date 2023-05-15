@@ -16,5 +16,11 @@ public interface IRatingService {
 	
 	public void deleteRating(Long id); //Delete a rating
 
-	Double getAverageRating(Book book);
+	public Double getAverageRating(Book book); //Get average rating of a book by its id
+
+	public List<Rating> getRatingsByBookId(Book book); //Get all rating for a specific book
+
+	
+
+	
 }

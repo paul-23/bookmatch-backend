@@ -31,17 +31,26 @@ public class RatingController {
 
 	@Autowired
 	BookServiceImp bookServiceImp;
-	
+
 	@GetMapping("/ratings/average/{bookId}")
-    public ResponseEntity<Double> getAverageRating(@PathVariable Long bookId) {
-        Book book = new Book();
-        book.setId_book(bookId);
-        Double averageRating = ratingServiceImp.getAverageRating(book);
-        if (averageRating == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(averageRating);
-    }
+	public Double getAverageRating(@PathVariable("bookId") Long bookId) {
+		Book book = new Book();
+		book.setId_book(bookId);
+		Double averageRating = ratingServiceImp.getAverageRating(book);
+
+		if (averageRating == null) {
+			return 0.0;
+		}
+		return averageRating;
+	}
+	
+
+	@GetMapping("/ratings/{bookId}")
+	public List<Rating> getRatingsByBookId(@PathVariable("bookId") Long bookId) {
+		Book book = new Book();
+		book.setId_book(bookId);
+		return ratingServiceImp.getRatingsByBookId(book);
+	}
 
 	@GetMapping("/ratings")
 	public List<Rating> listAllRatings() {
@@ -52,16 +61,16 @@ public class RatingController {
 	public Rating saveRating(@RequestBody Rating rating) {
 		return ratingServiceImp.saveRating(rating);
 	}
-
-	@GetMapping("/ratings/{id}")
-	public Rating ratingById(@PathVariable(name = "id") Long id) {
-
-		Rating ratingById = new Rating();
-
-		ratingById = ratingServiceImp.ratingById(id);
-
-		return ratingById;
-	}
+//
+//	@GetMapping("/ratings/{id}")
+//	public Rating ratingById(@PathVariable(name = "id") Long id) {
+//
+//		Rating ratingById = new Rating();
+//
+//		ratingById = ratingServiceImp.ratingById(id);
+//
+//		return ratingById;
+//	}
 
 	@PutMapping("/ratings/{id}")
 	public Rating updateRating(@PathVariable(name = "id") Long id, @RequestBody Rating rating) {
