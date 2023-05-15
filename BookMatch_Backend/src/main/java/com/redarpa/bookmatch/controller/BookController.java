@@ -47,6 +47,9 @@ public class BookController {
 
 	@PostMapping("/book")
 	public Book saveBook(@RequestBody Book book) {
+		if (book.getCover_image() == null || book.getCover_image().equals(null) || book.getCover_image().equals("")) {
+			saveCoverByBookISBN(book.getId_book(), book.getIsbn());
+		}
 		return bookServiceImp.saveBook(book);
 	}
 
@@ -56,9 +59,9 @@ public class BookController {
 		Book bookById = new Book();
 		bookById = bookServiceImp.bookById(id);
 		
-		if (bookById.getCover_image() == null || bookById.getCover_image().equals(null) || bookById.getCover_image().equals("")) {
-			saveCoverByBookISBN(bookById.getId_book(), bookById.getIsbn());
-		}
+//		if (bookById.getCover_image() == null || bookById.getCover_image().equals(null) || bookById.getCover_image().equals("")) {
+//			saveCoverByBookISBN(bookById.getId_book(), bookById.getIsbn());
+//		}
 
 		return bookById;
 	}
@@ -144,6 +147,10 @@ public class BookController {
 		updatedBook = bookServiceImp.updateBook(selectedBook);
 
 		System.out.println("Updated book is: " + updatedBook);
+		
+		if (updatedBook.getCover_image() == null || updatedBook.getCover_image().equals(null) || updatedBook.getCover_image().equals("")) {
+			saveCoverByBookISBN(updatedBook.getId_book(), updatedBook.getIsbn());
+		}
 
 		return updatedBook;
 	}
@@ -158,12 +165,21 @@ public class BookController {
 
 		Book bookByIsbn = new Book();
 		bookByIsbn = bookServiceImp.bookByIsbn(isbn);
-		
-		/*if (bookByIsbn.getCover_image() == null || bookById.getCover_image().equals(null) || bookById.getCover_image().equals("")) {
-			saveCoverByBookISBN(bookById.getId_book(), bookById.getIsbn());
-		}*/
 
 		return bookByIsbn;
 	}
+	
+	@GetMapping("/book/author/{author}")
+	public List<Book> bookByAuthor(@PathVariable(name = "author") String author) throws IOException {
+//		String formattedAuthor = "%" + author.toLowerCase() + "%";
 
+		return bookServiceImp.bookByAuthor(author);
+	}
+	
+	
+	@GetMapping("/book/title/{title}")
+	public List<Book> bookByTitle(@PathVariable(name = "title") String title) throws IOException {
+
+		return bookServiceImp.bookByTitle(title);
+	}
 }
