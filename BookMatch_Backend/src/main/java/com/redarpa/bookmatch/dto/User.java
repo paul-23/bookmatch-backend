@@ -3,7 +3,9 @@
  */
 package com.redarpa.bookmatch.dto;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -14,15 +16,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * @author RedArpa - BookMatch
  *
  */
 @Entity
-@Table(name = "users")
+@Table(name = "users", // User users table
+		uniqueConstraints = { // Make username and email unique
+				@UniqueConstraint(columnNames = "username"), @UniqueConstraint(columnNames = "email") })
 public class User {
 
 	@Id
@@ -48,13 +55,24 @@ public class User {
 	@OneToMany
 	@JoinColumn(name = "id_message")
 	private List<Message> message;
-	
+
 	@OneToMany
 	@JoinColumn(name = "id_rating")
 	private List<Rating> rating;
 
+	// Join with table user_roles
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
+
 	public User() {
 
+	}
+	
+	public User(String username, String email, String pass) {
+		this.username = username;
+		this.email = email;
+		this.pass = pass;
 	}
 
 	public User(Long id_user, String username, String email, String pass, byte[] profile_image, List<Book> book,
@@ -137,6 +155,14 @@ public class User {
 
 	public void setRating(List<Rating> rating) {
 		this.rating = rating;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 }
