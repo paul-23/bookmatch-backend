@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,17 +56,18 @@ public class BookController {
 		return bookServiceImp.listAllBooks();
 	}
 
-	@PostMapping("/book")
-	public Book saveBook(@RequestParam("image") MultipartFile imageFile, @RequestParam("book") Book book)
+	@PostMapping(value = "/book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
 			throws IOException {
-		Book savedBook;
 		if (imageFile != null && !imageFile.isEmpty()) {
-			savedBook = bookServiceImp.saveBookWithImage(book, imageFile.getBytes());
+			byte[] imageBytes = imageFile.getBytes();
+			Book savedBook = bookServiceImp.saveBookWithImage(book, imageBytes);
+			return savedBook;
 		} else {
-			savedBook = bookServiceImp.saveBook(book);
+			Book savedBook = bookServiceImp.saveBook(book);
 			saveCoverByBookISBN(savedBook.getId_book(), savedBook.getIsbn());
+			return savedBook;
 		}
-		return savedBook;
 	}
 
 	@GetMapping("/book/{id}")
@@ -141,9 +144,9 @@ public class BookController {
 		}
 	}
 
-	@PutMapping("/book/{id}")
-	public Book updateBook(@PathVariable(name = "id") Long id, @RequestParam("image") MultipartFile imageFile,
-			@RequestParam("book") Book book) throws IOException {
+	@PutMapping(value = "/book/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Book updateBook(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile,
+			@RequestPart("book") Book book) throws IOException {
 		Book selectedBook = bookServiceImp.bookById(id);
 		selectedBook.setAuthor(book.getAuthor());
 		selectedBook.setTitle(book.getTitle());

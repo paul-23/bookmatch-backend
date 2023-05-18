@@ -8,6 +8,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,8 +35,8 @@ public class UserController {
 		return userServiceImpl.listAllUsers();
 	}
 
-	@PostMapping("/user")
-	public User saveUser(@RequestParam("image") MultipartFile imageFile, @RequestParam("user") User user) throws IOException {
+	@PostMapping(value = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public User saveUser(@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") User user) throws IOException {
 		User user1;
 		if (imageFile != null && !imageFile.isEmpty()) {
 			user1 = userServiceImpl.saveUserWithImage(user, imageFile.getBytes());
@@ -98,8 +100,8 @@ public class UserController {
 		return userById;
 	}
 
-	@PutMapping("/user/{id}")
-	public User updateUser(@PathVariable(name = "id") Long id, @RequestParam("image") MultipartFile imageFile, @RequestParam("user") User user) throws IOException {
+	@PutMapping(value = "/user/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public User updateUser(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") User user) throws IOException {
 	    User selectedUser = userServiceImpl.userById(id);
 	    selectedUser.setUsername(user.getUsername());
 	    selectedUser.setEmail(user.getEmail());
