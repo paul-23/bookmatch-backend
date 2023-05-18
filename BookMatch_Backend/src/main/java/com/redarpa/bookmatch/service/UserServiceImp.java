@@ -10,7 +10,7 @@ import com.redarpa.bookmatch.dto.User;
 
 @Service
 public class UserServiceImp implements IUserService {
-	
+
 	@Autowired
 	IUserDAO iUserDAO;
 
@@ -37,6 +37,20 @@ public class UserServiceImp implements IUserService {
 	@Override
 	public void deleteUser(Long id) {
 		iUserDAO.deleteById(id);
+	}
+
+	public User saveImage(User user) {
+		return iUserDAO.save(user);
+	}
+
+	public User saveUserWithImage(User user, byte[] imageBytes) {
+		user.setProfile_image(imageBytes);
+		return iUserDAO.save(user);
+	}
+
+	public User updateUserWithImage(User user, byte[] imageBytes) {
+		user.setProfile_image(imageBytes);
+		return iUserDAO.save(user);
 	}
 
 }
