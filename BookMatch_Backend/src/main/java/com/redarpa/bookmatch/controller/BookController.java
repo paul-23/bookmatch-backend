@@ -185,4 +185,10 @@ public class BookController {
 
 		return bookServiceImp.bookByTitle(title);
 	}
+	
+	@GetMapping("/book/category/{category}")
+	public List<Book> bookByCategory(@PathVariable(name = "category") String category) throws IOException {
+
+		return bookServiceImp.bookByCategory(category);
+	}
 }

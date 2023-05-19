@@ -64,5 +64,11 @@ public class BookServiceImp implements IBookService {
 		String formattedAuthor = "%" + author.toLowerCase() + "%";
 		return iBookDAO.findBookByAuthorLike(formattedAuthor);
 	}
+	
+	@Override
+	public List<Book> bookByCategory(String category) {
+		String formattedCategory = "%" + category.toLowerCase() + "%";
+		return iBookDAO.findBookByCategoryLike(formattedCategory);
+	}
 
 }

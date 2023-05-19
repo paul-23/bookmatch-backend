@@ -25,4 +25,6 @@ public interface IBookService {
 	public List<Book> bookByTitle(String title);
 
 	public List<Book> bookByAuthor(String author);
+	
+	public List<Book> bookByCategory(String category);
 }
