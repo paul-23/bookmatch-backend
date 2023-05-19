@@ -24,9 +24,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 public class AuthTokenFilter extends OncePerRequestFilter {
 
 	// Autowire jwtUtils

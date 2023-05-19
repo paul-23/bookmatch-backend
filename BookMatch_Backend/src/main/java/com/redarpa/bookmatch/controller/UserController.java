@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.redarpa.bookmatch.dto.User;
 import com.redarpa.bookmatch.service.UserServiceImp;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @RestController
 @RequestMapping("/api")
 public class UserController {

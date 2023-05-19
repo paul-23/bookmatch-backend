@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import com.redarpa.bookmatch.dao.IMessageDAO;
 import com.redarpa.bookmatch.dto.Message;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @Service
 public class MessageServiceImp implements IMessageService {
 	

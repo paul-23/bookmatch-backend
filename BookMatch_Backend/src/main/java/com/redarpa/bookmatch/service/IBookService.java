@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.redarpa.bookmatch.dto.Book;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IBookService {
 	public List<Book> listAllBooks(); // List All
 

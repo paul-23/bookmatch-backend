@@ -3,10 +3,10 @@
  */
 package com.redarpa.bookmatch.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,9 +16,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.redarpa.bookmatch.dto.User;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 public class UserDetailsImpl implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
@@ -46,8 +47,8 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	public static UserDetailsImpl build(User user) {
-		List<GrantedAuthority> authorities = user.getRoles().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority(user.getRoleId()));
 
 		return new UserDetailsImpl(user.getId_user(), user.getUsername(), user.getEmail(), user.getPass(), authorities);
 	}

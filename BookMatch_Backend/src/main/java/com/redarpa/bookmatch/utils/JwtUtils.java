@@ -16,9 +16,10 @@ import com.redarpa.bookmatch.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 @Component
 public class JwtUtils {
 

@@ -5,6 +5,11 @@ import java.util.List;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IRatingService {
 	public List<Rating> listAllRatings(); //List All 
 	

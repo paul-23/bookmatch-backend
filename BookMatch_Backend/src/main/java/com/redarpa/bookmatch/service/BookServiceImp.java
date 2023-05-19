@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import com.redarpa.bookmatch.dao.IBookDAO;
 import com.redarpa.bookmatch.dto.Book;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @Service
 public class BookServiceImp implements IBookService {
 	

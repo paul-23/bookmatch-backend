@@ -41,7 +41,7 @@ public class BookController {
 	@Autowired
 	RatingServiceImp ratingServiceImp;
 
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/books")
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();

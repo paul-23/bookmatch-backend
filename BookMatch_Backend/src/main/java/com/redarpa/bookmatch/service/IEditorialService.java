@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.redarpa.bookmatch.dto.Editorial;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IEditorialService {
 	
 	public List<Editorial> listAllEditorial(); // List All editorial

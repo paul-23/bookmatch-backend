@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import com.redarpa.bookmatch.dao.IUserDAO;
 import com.redarpa.bookmatch.dto.User;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @Service
 public class UserServiceImp implements IUserService {
 	

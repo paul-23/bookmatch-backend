@@ -14,9 +14,10 @@ import com.redarpa.bookmatch.dao.IUserDAO;
 import com.redarpa.bookmatch.dto.User;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

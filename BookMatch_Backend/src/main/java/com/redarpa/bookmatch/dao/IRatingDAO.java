@@ -7,6 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IRatingDAO extends JpaRepository<Rating, Long> {
 	List<Rating> findByBookRating(Book bookRating);
 //	List<Rating> findByBookRating(Long bookId);

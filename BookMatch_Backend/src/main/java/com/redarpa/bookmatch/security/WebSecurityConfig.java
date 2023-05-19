@@ -20,66 +20,60 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.redarpa.bookmatch.service.UserDetailsServiceImpl;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
 	// Autowire UserDetailsServiceImpl
-		@Autowired
-		UserDetailsServiceImpl userDetailsService;
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
 
-		// Autowire AuthEntryPointJwt
-		@Autowired
-		private AuthEntryPointJwt unauthorizedHandler;
+	// Autowire AuthEntryPointJwt
+	@Autowired
+	private AuthEntryPointJwt unauthorizedHandler;
 
-		// Token filter bean
-		@Bean
-		public AuthTokenFilter authenticationJwtTokenFilter() {
-			return new AuthTokenFilter();
-		}
+	// Token filter bean
+	@Bean
+	public AuthTokenFilter authenticationJwtTokenFilter() {
+		return new AuthTokenFilter();
+	}
 
-		// Authentication provider bean
-		@Bean
-		public DaoAuthenticationProvider authenticationProvider() {
-			DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	// Authentication provider bean
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-			authProvider.setUserDetailsService(userDetailsService);
-			authProvider.setPasswordEncoder(passwordEncoder());
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
 
-			return authProvider;
-		}
+		return authProvider;
+	}
 
-		// Authentication manager bean
-		@Bean
-		public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-			return authConfig.getAuthenticationManager();
-		}
+	// Authentication manager bean
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
+	}
 
-		// Password Encoder
-		@Bean
-		public PasswordEncoder passwordEncoder() {
-			return new BCryptPasswordEncoder();
-		}
+	// Password Encoder
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-		// Security Filter Chain
-		@Bean
-		public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-			http.csrf().disable()
-		    .sessionManagement()
-		        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		        .and()
-		    .authorizeHttpRequests()
-		        .requestMatchers("/auth/**").permitAll()
-		        .requestMatchers("/api/**").permitAll().anyRequest().authenticated()
-		    .and()
-		    .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-		    .and()
-		    .authenticationProvider(authenticationProvider())
-		    .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+	// Security Filter Chain
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.authorizeHttpRequests().requestMatchers("/auth/**").permitAll().requestMatchers("/api/**")
+				.authenticated().anyRequest().permitAll().and().exceptionHandling()
+				.authenticationEntryPoint(unauthorizedHandler).and().authenticationProvider(authenticationProvider())
+				.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
-			return http.build();
-		}
+		return http.build();
+	}
 }

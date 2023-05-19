@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.redarpa.bookmatch.dto.Message;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IMessageService {
 
 	public List<Message> listAllMessages(); // List All messages

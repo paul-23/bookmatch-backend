@@ -9,6 +9,11 @@ import com.redarpa.bookmatch.dao.IRatingDAO;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @Service
 public class RatingServiceImp implements IRatingService {
 	

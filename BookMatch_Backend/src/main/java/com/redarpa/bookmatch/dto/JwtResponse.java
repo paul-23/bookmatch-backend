@@ -3,12 +3,11 @@
  */
 package com.redarpa.bookmatch.dto;
 
-import java.util.List;
-
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 public class JwtResponse {
 	// Arguments
 		private String token;
@@ -16,10 +15,10 @@ public class JwtResponse {
 		private Long id;
 		private String username;
 		private String email;
-		private List<String> roles;
+		private String roles;
 
 		// Constructors
-		public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+		public JwtResponse(String accessToken, Long id, String username, String email, String roles) {
 			this.token = accessToken;
 			this.id = id;
 			this.username = username;
@@ -48,7 +47,7 @@ public class JwtResponse {
 			return username;
 		}
 
-		public List<String> getRoles() {
+		public String getRoles() {
 			return roles;
 		}
 

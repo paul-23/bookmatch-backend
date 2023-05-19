@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import com.redarpa.bookmatch.dao.IEditorialDAO;
 import com.redarpa.bookmatch.dto.Editorial;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @Service
 public class EditorialServiceImp implements IEditorialService {
 

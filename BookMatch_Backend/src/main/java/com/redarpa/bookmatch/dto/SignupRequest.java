@@ -3,16 +3,15 @@
  */
 package com.redarpa.bookmatch.dto;
 
-import java.util.Set;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 public class SignupRequest {
 
 	// Attributes
@@ -25,7 +24,7 @@ public class SignupRequest {
 		@Email
 		private String email;
 
-		private Set<String> role;
+		private String role;
 
 		@NotBlank
 		@Size(min = 6, max = 40)
@@ -44,7 +43,7 @@ public class SignupRequest {
 			return password;
 		}
 
-		public Set<String> getRole() {
+		public String getRole() {
 			return this.role;
 		}
 
@@ -61,7 +60,7 @@ public class SignupRequest {
 			this.password = password;
 		}
 
-		public void setRole(Set<String> role) {
+		public void setRole(String role) {
 			this.role = role;
 		}
 }

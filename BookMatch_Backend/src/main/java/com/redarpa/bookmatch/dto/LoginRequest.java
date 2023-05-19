@@ -6,9 +6,10 @@ package com.redarpa.bookmatch.dto;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 public class LoginRequest {
 	// Attributes
 		@NotBlank

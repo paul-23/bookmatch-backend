@@ -4,9 +4,10 @@
 package com.redarpa.bookmatch.dto;
 
 /**
- * @author Marc
+ * @author RedArpa - BookMatch
  *
  */
+
 public class MessageResponse {
 
 	// Attributes
