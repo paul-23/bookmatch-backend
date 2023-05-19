@@ -13,11 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.redarpa.bookmatch.service.UserDetailsImpl;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 
 /**
  * @author Marc
@@ -30,11 +26,11 @@ public class JwtUtils {
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
 	// Get jwt secret from application.properties
-	@Value("${TA27.E1.jwtSecret}")
+	@Value("${com.redarpa.bookmatch.jwtSecret}")
 	private String jwtSecret;
 
 	// Get expiration time from application.properties
-	@Value("${TA27.E1.jwtExpirationMs}")
+	@Value("${com.redarpa.bookmatch.jwtExpirationMs}")
 	private int jwtExpirationMs;
 
 	// Function to generate JWT Tokens

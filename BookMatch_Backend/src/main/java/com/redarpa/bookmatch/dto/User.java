@@ -47,6 +47,9 @@ public class User {
 
 	@Column(name = "profile_image")
 	private byte[] profile_image;
+	
+	@Column(name = "role_id")
+	private String roleId;
 
 	@OneToMany
 	@JoinColumn(name = "id_book")
@@ -163,6 +166,14 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 
 }

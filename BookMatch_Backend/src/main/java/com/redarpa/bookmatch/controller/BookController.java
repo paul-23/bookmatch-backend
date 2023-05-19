@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class BookController {
 	@Autowired
 	RatingServiceImp ratingServiceImp;
 
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping("/books")
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
@@ -155,6 +157,7 @@ public class BookController {
 		return updatedBook;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/book/{id}")
 	public void deleteBook(@PathVariable(name = "id") Long id) {
 		bookServiceImp.deleteBook(id);
