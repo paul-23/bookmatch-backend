@@ -9,8 +9,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +30,7 @@ import com.redarpa.bookmatch.dao.IBookDAO;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.service.BookServiceImp;
 import com.redarpa.bookmatch.service.RatingServiceImp;
+import com.redarpa.bookmatch.service.UserDetailsImpl;
 import com.redarpa.bookmatch.service.UserServiceImp;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,16 +56,16 @@ public class BookController {
 
 	@Autowired
 	IBookDAO iBookDAO;
-  
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+
 	@GetMapping("/books")
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
 	}
-
+	
 	@PostMapping(value = "/book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
-			throws IOException {
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile,
+			@RequestPart("book") Book book) throws IOException {
 		if (imageFile != null && !imageFile.isEmpty()) {
 			byte[] imageBytes = imageFile.getBytes();
 			Book savedBook = bookServiceImp.saveBookWithImage(book, imageBytes);
@@ -92,7 +97,7 @@ public class BookController {
 		response.getOutputStream().write(bookOptional.getCover_image());
 	}
 
-	@PutMapping("/book/image/{id}")
+	/* @PutMapping("/book/image/{id}")
 	public Book saveCoverByBookId(@PathVariable(name = "id") Long id, @RequestParam("image") MultipartFile imageFile)
 			throws IOException {
 
@@ -108,7 +113,7 @@ public class BookController {
 		bookServiceImp.saveImage(bookById);
 
 		return bookById;
-	}
+	} */
 
 	public void saveCoverByBookISBN(Long id, String isbn) {
 		try {
@@ -147,16 +152,33 @@ public class BookController {
 	}
 
 	@PutMapping(value = "/book/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Book updateBook(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile,
-			@RequestPart("book") Book book) throws IOException {
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public Book updateBook(@PathVariable(name = "id") Long id,
+			@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
+			throws IOException {
+
 		Book selectedBook = bookServiceImp.bookById(id);
+
+		// Verificar si el usuario actual es el creador del libro
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			Long userId = userDetails.getId();
+
+			// Comparar el ID del usuario actual con el ID del usuario del libro
+			if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+					&& !selectedBook.getUser().getId_user().equals(userId)) {
+				throw new AccessDeniedException("No tienes permiso para modificar este libro");
+			}
+		}
+
 		selectedBook.setAuthor(book.getAuthor());
 		selectedBook.setTitle(book.getTitle());
 		selectedBook.setIsbn(book.getIsbn());
 		selectedBook.setCategory(book.getCategory());
 		selectedBook.setAviable(book.getAviable());
-		selectedBook.setUser(book.getUser());
 		selectedBook.setEditorial(book.getEditorial());
+		selectedBook.setDescription(book.getDescription());
 
 		Book updatedBook;
 		if (imageFile != null && !imageFile.isEmpty()) {
@@ -174,19 +196,32 @@ public class BookController {
 		return updatedBook;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@DeleteMapping("/book/{id}")
-	public void deleteBook(@PathVariable(name = "id") Long id) {
-		bookServiceImp.deleteBook(id);
+	public String deleteBook(@PathVariable(name = "id") Long id) {
+
+		Book selectedBook = bookServiceImp.bookById(id);
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			Long userId = userDetails.getId();
+
+			// Comparar el ID del usuario actual con el ID del usuario del libro
+			if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+					&& !selectedBook.getUser().getId_user().equals(userId)) {
+				throw new AccessDeniedException("No tienes permiso para modificar este libro");
+			} else {
+				bookServiceImp.deleteBook(id);
+				return "Bookd deleted succesfully";
+			}
+		}
+		return "Book not deleted";
 	}
 
 	@GetMapping("/book/isbn/{isbn}")
-	public Book bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
-
-		Book bookByIsbn = new Book();
-		bookByIsbn = bookServiceImp.bookByIsbn(isbn);
-
-		return bookByIsbn;
+	public List<Book> bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
+		return bookServiceImp.bookByIsbn(isbn);
 	}
 
 	@GetMapping("/book/author/{author}")
@@ -198,13 +233,13 @@ public class BookController {
 	public List<Book> bookByTitle(@PathVariable(name = "title") String title) throws IOException {
 		return bookServiceImp.bookByTitle(title);
 	}
-  
+
 	@GetMapping("/book/category/{category}")
 	public List<Book> bookByCategory(@PathVariable(name = "category") String category) throws IOException {
 
 		return bookServiceImp.bookByCategory(category);
 	}
-  
+
 	@GetMapping("/books/user/{id}")
 	public List<Book> findBooksByIdUser(@PathVariable(name = "id") Long user) {
 		return bookServiceImp.findBooksByUser(userServiceImp.userById(user));

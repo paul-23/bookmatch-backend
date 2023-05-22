@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,6 +48,9 @@ public class Book {
 	
 	@Column(name = "aviable")
 	private boolean aviable;
+	
+	@Column(name = "description")
+	private String description;
 
 	@ManyToOne
 	@JoinColumn(name = "id_user")
@@ -56,8 +60,7 @@ public class Book {
 	@JoinColumn(name = "id_editorial")
 	private Editorial editorial;
 	
-	@OneToMany
-	@JoinColumn(name = "id_rating")
+	@OneToMany(mappedBy = "bookRating", cascade = CascadeType.ALL)
 	private List<Rating> rating;
 
 	public Book() {
@@ -65,7 +68,7 @@ public class Book {
 	}
 	
 	public Book(String author, String title, String isbn, String category,
-			boolean aviable, User user, Editorial editorial) {
+			boolean aviable, String description, User user, Editorial editorial) {
 		this.author = author;
 		this.title = title;
 		this.isbn = isbn;
@@ -73,10 +76,11 @@ public class Book {
 		this.aviable = aviable;
 		this.user = user;
 		this.editorial = editorial;
+		this.description = description;
 	}
 	
 	public Book(Long id_book, String author, String title, String isbn, String category, byte[] cover_image,
-			boolean aviable, User user, Editorial editorial) {
+			boolean aviable, String description, User user, Editorial editorial, List<Rating> rating) {
 		this.id_book = id_book;
 		this.author = author;
 		this.title = title;
@@ -84,8 +88,18 @@ public class Book {
 		this.category = category;
 		this.cover_image = cover_image;
 		this.aviable = aviable;
+		this.description = description;
 		this.user = user;
 		this.editorial = editorial;
+		this.rating = rating;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public byte[] getCover_image() {

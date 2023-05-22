@@ -56,7 +56,7 @@ public class AuthController {
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
@@ -73,10 +73,6 @@ public class AuthController {
 	// Signup to reguster a new user
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		// Checks username is available
-	    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-	        return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
-	    }
 
 	    // Checks email is available
 	    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -87,22 +83,8 @@ public class AuthController {
 	    User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
 	            encoder.encode(signUpRequest.getPassword()));
 
-	    String strRoleId = signUpRequest.getRole(); // Obtener el ID del rol como una cadena de texto
-
-	    String userRole; // Declarar una variable para almacenar el rol
-
-	    // Verificar y asignar el rol basado en el ID del rol
-	    switch (strRoleId) {
-	        case "admin":
-	            userRole = "ROLE_ADMIN"; // Rol de administrador
-	            break;
-	        default:
-	            userRole = "ROLE_USER"; // Rol de usuario
-	            break;
-	    }
-
 	    // Sets roles and saves user
-	    user.setRoleId(userRole);
+	    user.setRoleId("ROLE_USER");
 	    userRepository.save(user);
 
 	    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

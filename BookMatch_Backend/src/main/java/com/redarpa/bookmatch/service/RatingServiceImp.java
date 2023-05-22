@@ -58,6 +58,10 @@ public class RatingServiceImp implements IRatingService {
         return averageRating;
     }
 	
+	public boolean hasUserRated(Long userId, Long bookId) {
+        return iRatingDAO.existsByUserRatingAndBookRating(userId, bookId);
+    }
+	
 	@Override 
 	public List<Rating> getRatingsByBookId(Book book){
 		

@@ -13,26 +13,37 @@ import jakarta.validation.constraints.NotBlank;
 public class LoginRequest {
 	// Attributes
 		@NotBlank
-		private String username;
+		private String email;
 
 		@NotBlank
 		private String password;
 
-		// Getters
-		public String getUsername() {
-			return username;
+		/**
+		 * @return the email
+		 */
+		public String getEmail() {
+			return email;
 		}
 
+		/**
+		 * @param email the email to set
+		 */
+		public void setEmail(String email) {
+			this.email = email;
+		}
+
+		/**
+		 * @return the password
+		 */
 		public String getPassword() {
 			return password;
 		}
 
-		// Setters
+		/**
+		 * @param password the password to set
+		 */
 		public void setPassword(String password) {
 			this.password = password;
 		}
-
-		public void setUsername(String username) {
-			this.username = username;
-		}
+		
 }
