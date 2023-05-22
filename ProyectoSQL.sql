@@ -1,18 +1,37 @@
 DROP DATABASE IF EXISTS proyecto;
 CREATE DATABASE proyecto;
 USE proyecto;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS editorials;
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS ratings;
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS roles;
 
 CREATE TABLE users (
 id_user int AUTO_INCREMENT PRIMARY KEY,
 username varchar(50) DEFAULT NULL,
 profile_image LONGBLOB DEFAULT NULL,
-email varchar(50) DEFAULT NULL,
+email varchar(50) UNIQUE DEFAULT NULL,
 pass varchar(50) DEFAULT NULL
+);
+
+CREATE TABLE roles(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) DEFAULT NULL
+);
+
+CREATE TABLE user_roles(
+	user_id INT(20) NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(id_user) ON UPDATE CASCADE ON DELETE CASCADE, 
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE editorials (
 id_editorial int AUTO_INCREMENT PRIMARY KEY,
-name_editorial varchar(250) DEFAULT NULL
+name_editorial varchar(250) UNIQUE DEFAULT NULL
 );
 
 CREATE TABLE books (
@@ -51,11 +70,23 @@ content varchar(250),
 sent_date DATETIME
 );
 
+INSERT INTO users (username, email, pass) VALUES ('admin', 'admin@example.com', 'admin');
 INSERT INTO users (username, email, pass) VALUES ('juan123', 'juan@example.com', 'pass123');
 INSERT INTO users (username, email, pass) VALUES ('maria456', 'maria@example.com', 'pass456');
 INSERT INTO users (username, email, pass) VALUES ('pedro789', 'pedro@example.com', 'pass789');
 INSERT INTO users (username, email, pass) VALUES ('laura101', 'laura@example.com', 'pass101');
 INSERT INTO users (username, email, pass) VALUES ('carlos2022', 'carlos@example.com', 'pass2022');
+
+INSERT INTO roles(name) VALUES('ROLE_USER');
+INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+
+INSERT INTO user_roles(user_id, role_id) VALUES (1, 1);
+INSERT INTO user_roles(user_id, role_id) VALUES (1, 2);
+INSERT INTO user_roles(user_id, role_id) VALUES (2, 1);
+INSERT INTO user_roles(user_id, role_id) VALUES (3, 1);
+INSERT INTO user_roles(user_id, role_id) VALUES (4, 1);
+INSERT INTO user_roles(user_id, role_id) VALUES (5, 1);
+INSERT INTO user_roles(user_id, role_id) VALUES (6, 1);
 
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Alfaguara');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Planeta');
@@ -64,15 +95,15 @@ INSERT INTO editorials (name_editorial) VALUES ('Editorial Anagrama');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Destino');
 
 INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '978-987-740-339-9', 'Novela', 1, 2);
+VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '9789877403399', 'Novela', 1, 2);
 INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Isabel Allende', 'La casa de los espíritus', '978-84-9658-358-9', 'Novela', 2, 1);
+VALUES ('Isabel Allende', 'La casa de los espíritus', '9788496583589', 'Novela', 2, 1);
 INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Mario Vargas Llosa', 'La fiesta del chivo', '978-84-8346-582-1', 'Novela', 3, 3);
+VALUES ('Mario Vargas Llosa', 'La fiesta del chivo', '9788483465821', 'Novela', 3, 3);
 INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Julio Cortázar', 'Rayuela', '978-987-1220-72-6', 'Novela', 4, 4);
+VALUES ('Julio Cortázar', 'Rayuela', '9789871220726', 'Novela', 4, 4);
 INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Jorge Luis Borges', 'Ficciones', '978-987-738-108-5', 'Cuento', 5, 5);
+VALUES ('Jorge Luis Borges', 'Ficciones', '9789877381085', 'Cuento', 5, 5);
 
 INSERT INTO ratings (id_user_rating, id_book_rating, rating)
 VALUES(1, 2, 5);

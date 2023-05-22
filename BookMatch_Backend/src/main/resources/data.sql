@@ -5,13 +5,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS editorials;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS ratings;
-DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS roles;
-
-/*CREATE TABLE roles(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(20) DEFAULT NULL
-);*/
+DROP TABLE IF EXISTS messages;
 
 CREATE TABLE users (
 id_user int AUTO_INCREMENT PRIMARY KEY,
@@ -22,16 +16,6 @@ pass varchar(255) DEFAULT NULL,
 role_id VARCHAR(50) DEFAULT 'ROLE_USER'
 );
 
-
-/*
-CREATE TABLE user_roles(
-    user_id INT(20) NOT NULL,
-    role_id INT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES users(id_user) ON UPDATE CASCADE ON DELETE CASCADE, 
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-*/
 CREATE TABLE editorials (
 id_editorial int AUTO_INCREMENT PRIMARY KEY,
 name_editorial varchar(250) UNIQUE DEFAULT NULL
@@ -45,6 +29,7 @@ isbn varchar(20) DEFAULT NULL,
 category VARCHAR(50) DEFAULT NULL,
 cover_image LONGBLOB DEFAULT NULL,
 aviable BOOLEAN DEFAULT true,
+description VARCHAR(255) DEFAULT NULL,
 id_user int DEFAULT NULL,
 CONSTRAINT user_FK FOREIGN KEY (id_user) REFERENCES users (id_user),
 id_editorial int DEFAULT NULL,
@@ -73,11 +58,6 @@ content varchar(250),
 sent_date DATETIME
 );
 
-
-/*
-INSERT INTO roles(name) VALUES('ROLE_USER');
-INSERT INTO roles(name) VALUES('ROLE_ADMIN');*/
-
 INSERT INTO users (username, email, pass, role_id) VALUES ('admin', 'admin@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_ADMIN');
 INSERT INTO users (username, email, pass, role_id) VALUES ('juan123', 'juan@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_USER');
 INSERT INTO users (username, email, pass, role_id) VALUES ('maria456', 'maria@example.com', 'pass456', 'ROLE_USER');
@@ -85,30 +65,22 @@ INSERT INTO users (username, email, pass, role_id) VALUES ('pedro789', 'pedro@ex
 INSERT INTO users (username, email, pass, role_id) VALUES ('laura101', 'laura@example.com', 'pass101', 'ROLE_USER');
 INSERT INTO users (username, email, pass, role_id) VALUES ('carlos2022', 'carlos@example.com', 'pass2022', 'ROLE_USER');
 
-/*INSERT INTO user_roles(user_id, role_id) VALUES (1, 1);
-INSERT INTO user_roles(user_id, role_id) VALUES (1, 2);
-INSERT INTO user_roles(user_id, role_id) VALUES (2, 1);
-INSERT INTO user_roles(user_id, role_id) VALUES (3, 1);
-INSERT INTO user_roles(user_id, role_id) VALUES (4, 1);
-INSERT INTO user_roles(user_id, role_id) VALUES (5, 1);
-INSERT INTO user_roles(user_id, role_id) VALUES (6, 1);*/
-
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Alfaguara');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Planeta');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Tusquets');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Anagrama');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Destino');
 
-INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '9789877403399', 'Novela', 1, 2);
-INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Isabel Allende', 'La casa de los espíritus', '9788496583589', 'Novela', 2, 1);
-INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Mario Vargas Llosa', 'La fiesta del chivo', '9788483465821', 'Novela', 3, 3);
-INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Julio Cortázar', 'Rayuela', '9789871220726', 'Novela', 4, 4);
-INSERT INTO books (author, title, isbn, category, id_user, id_editorial) 
-VALUES ('Jorge Luis Borges', 'Ficciones', '9789877381085', 'Cuento', 5, 5);
+INSERT INTO books (author, title, isbn, category, description, id_user, id_editorial) 
+VALUES ('Gabriel Garcia Marquez', 'Cien años de soledad', '9789877403399', 'Novela', 'Descripcion libro id 1', 1, 2);
+INSERT INTO books (author, title, isbn, category, description, id_user, id_editorial) 
+VALUES ('Isabel Allende', 'La casa de los espíritus', '9788496583589', 'Novela', 'Descripcion libro id 2', 2, 1);
+INSERT INTO books (author, title, isbn, category, description, id_user, id_editorial) 
+VALUES ('Mario Vargas Llosa', 'La fiesta del chivo', '9788483465821', 'Novela', 'Descripcion libro id 3', 3, 3);
+INSERT INTO books (author, title, isbn, category, description, id_user, id_editorial) 
+VALUES ('Julio Cortázar', 'Rayuela', '9789871220726', 'Novela', 'Descripcion libro id 4', 4, 4);
+INSERT INTO books (author, title, isbn, category, description, id_user, id_editorial) 
+VALUES ('Jorge Luis Borges', 'Ficciones', '9789877381085', 'Cuento', 'Descripcion libro id 5', 5, 5);
 
 INSERT INTO ratings (id_user_rating, id_book_rating, rating)
 VALUES(1, 2, 5);
