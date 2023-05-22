@@ -25,13 +25,11 @@ public class Rating {
 	@Column(name = "id_rating")
 	private Long idRating;
 
-	@ManyToOne
-	@JoinColumn(name = "id_user_rating")
-	private User userRating;
+	@Column(name = "id_user_rating")
+	private Long userRating;
 
-	@ManyToOne
-	@JoinColumn(name = "id_book_rating")
-	private Book bookRating;
+	@Column(name = "id_book_rating")
+	private Long bookRating;
 
 	@Column(name = "rating")
 	private Long rating;
@@ -43,7 +41,7 @@ public class Rating {
 		
 	}
 
-	public Rating(Long idRating, User userRating, Book bookRating, Long rating, String comment) {
+	public Rating(Long idRating, Long userRating, Long bookRating, Long rating, String comment) {
 		this.idRating = idRating;
 		this.userRating = userRating;
 		this.bookRating = bookRating;
@@ -51,44 +49,74 @@ public class Rating {
 		this.comment = comment;
 	}
 
+	/**
+	 * @return the idRating
+	 */
 	public Long getIdRating() {
 		return idRating;
 	}
 
-	public void setIdRating(Long idRating) {
-		this.idRating = idRating;
-	}
-
-	public User getUserRating() {
+	/**
+	 * @return the userRating
+	 */
+	public Long getUserRating() {
 		return userRating;
 	}
 
-	public void setUserRating(User userRating) {
-		this.userRating = userRating;
-	}
-
-	public Book getBookRating() {
+	/**
+	 * @return the bookRating
+	 */
+	public Long getBookRating() {
 		return bookRating;
 	}
-	
-	public void setBookRating(Book bookRating) {
-		this.bookRating = bookRating;
-	}
 
+	/**
+	 * @return the rating
+	 */
 	public Long getRating() {
 		return rating;
 	}
 
-	public void setRating(Long rating) {
-		this.rating = rating;
-	}
-
+	/**
+	 * @return the comment
+	 */
 	public String getComment() {
 		return comment;
 	}
 
+	/**
+	 * @param idRating the idRating to set
+	 */
+	public void setIdRating(Long idRating) {
+		this.idRating = idRating;
+	}
+
+	/**
+	 * @param userRating the userRating to set
+	 */
+	public void setUserRating(Long userRating) {
+		this.userRating = userRating;
+	}
+
+	/**
+	 * @param bookRating the bookRating to set
+	 */
+	public void setBookRating(Long bookRating) {
+		this.bookRating = bookRating;
+	}
+
+	/**
+	 * @param rating the rating to set
+	 */
+	public void setRating(Long rating) {
+		this.rating = rating;
+	}
+
+	/**
+	 * @param comment the comment to set
+	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
+	
 }

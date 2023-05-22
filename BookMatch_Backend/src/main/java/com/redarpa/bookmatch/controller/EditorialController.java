@@ -3,6 +3,7 @@ package com.redarpa.bookmatch.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class EditorialController {
 	}
 
 	@PostMapping("/editorials")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Editorial saveEditorial(@RequestBody Editorial editorial) {
 		return editorialServiceImp.saveEditorial(editorial);
 	}
@@ -50,6 +52,7 @@ public class EditorialController {
 	}
 
 	@PutMapping("/editorials/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Editorial updateEditorial(@PathVariable(name = "id") Long id, @RequestBody Editorial editorial) {
 
 		Editorial selectedEditorial = new Editorial();
@@ -68,6 +71,7 @@ public class EditorialController {
 	}
 
 	@DeleteMapping("/editorial/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteEditorial(@PathVariable(name = "id") Long id) {
 		editorialServiceImp.deleteEditorial(id);
 	}

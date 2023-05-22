@@ -13,7 +13,11 @@ import org.springframework.stereotype.Component;
 
 import com.redarpa.bookmatch.service.UserDetailsImpl;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 /**
  * @author RedArpa - BookMatch
@@ -36,10 +40,10 @@ public class JwtUtils {
 
 	// Function to generate JWT Tokens
 	public String generateJwtToken(Authentication authentication) {
-
+		
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-		return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
+		return Jwts.builder().setSubject((userPrincipal.getEmail())).setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
 	}

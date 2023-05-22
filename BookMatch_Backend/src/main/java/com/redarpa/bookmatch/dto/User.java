@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,8 +26,8 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "users", // User users table
-		uniqueConstraints = { // Make username and email unique
-				@UniqueConstraint(columnNames = "username"), @UniqueConstraint(columnNames = "email") })
+		uniqueConstraints = { // Make email unique
+				@UniqueConstraint(columnNames = "email") })
 public class User {
 
 	@Id
@@ -56,8 +57,7 @@ public class User {
 	@JoinColumn(name = "id_message")
 	private List<Message> message;
 
-	@OneToMany
-	@JoinColumn(name = "id_rating")
+	@OneToMany(mappedBy = "userRating", cascade = CascadeType.ALL)
 	private List<Rating> rating;
 
 	public User() {
