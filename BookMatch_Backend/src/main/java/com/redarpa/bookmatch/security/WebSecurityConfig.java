@@ -6,6 +6,7 @@ package com.redarpa.bookmatch.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -69,8 +70,10 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeHttpRequests().requestMatchers("/auth/**").permitAll().requestMatchers("/api/**")
-				.authenticated().anyRequest().permitAll().and().exceptionHandling()
+				.authorizeHttpRequests().requestMatchers("/auth/**").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+				.requestMatchers("/api/**").authenticated().anyRequest().permitAll()
+				.and().exceptionHandling()
 				.authenticationEntryPoint(unauthorizedHandler).and().authenticationProvider(authenticationProvider())
 				.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 

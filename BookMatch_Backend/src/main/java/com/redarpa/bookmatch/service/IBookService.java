@@ -17,7 +17,7 @@ public interface IBookService {
 
 	public Book bookById(Long id); // List book by ID
 
-	public Book bookByIsbn(String isbn); // List book by ISBN
+	public List<Book> bookByIsbn(String isbn); // List book by ISBN
 
 	public Book updateBook(Book book); // Update book
 

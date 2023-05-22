@@ -36,11 +36,6 @@ public class BookServiceImp implements IBookService {
 	}
 
 	@Override
-	public Book bookByIsbn(String isbn) {
-		return iBookDAO.findBookByIsbn(isbn);
-	}
-
-	@Override
 	public Book updateBook(Book book) {
 		return iBookDAO.save(book);
 	}
@@ -54,6 +49,12 @@ public class BookServiceImp implements IBookService {
 		return iBookDAO.save(book);
 	}
 
+	@Override
+	public List<Book> bookByIsbn(String isbn) {
+		String formattedISBN= "%" + isbn.toLowerCase() + "%";
+		return iBookDAO.findBookByIsbnLike(formattedISBN);
+	}
+	
 	@Override
 	public List<Book> bookByTitle(String title) {
 		String formattedTitle = "%" + title.toLowerCase() + "%";

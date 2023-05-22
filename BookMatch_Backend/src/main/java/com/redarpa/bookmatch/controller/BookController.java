@@ -9,7 +9,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,16 +50,16 @@ public class BookController {
 
 	@Autowired
 	IBookDAO iBookDAO;
-  
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/books")
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
 	}
 
 	@PostMapping(value = "/book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
-			throws IOException {
+	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile,
+			@RequestPart("book") Book book) throws IOException {
 		if (imageFile != null && !imageFile.isEmpty()) {
 			byte[] imageBytes = imageFile.getBytes();
 			Book savedBook = bookServiceImp.saveBookWithImage(book, imageBytes);
@@ -147,16 +146,17 @@ public class BookController {
 	}
 
 	@PutMapping(value = "/book/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Book updateBook(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile,
-			@RequestPart("book") Book book) throws IOException {
+	public Book updateBook(@PathVariable(name = "id") Long id,
+			@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
+			throws IOException {
 		Book selectedBook = bookServiceImp.bookById(id);
 		selectedBook.setAuthor(book.getAuthor());
 		selectedBook.setTitle(book.getTitle());
 		selectedBook.setIsbn(book.getIsbn());
 		selectedBook.setCategory(book.getCategory());
 		selectedBook.setAviable(book.getAviable());
-		selectedBook.setUser(book.getUser());
 		selectedBook.setEditorial(book.getEditorial());
+		selectedBook.setDescription(book.getDescription());
 
 		Book updatedBook;
 		if (imageFile != null && !imageFile.isEmpty()) {
@@ -174,19 +174,15 @@ public class BookController {
 		return updatedBook;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/book/{id}")
 	public void deleteBook(@PathVariable(name = "id") Long id) {
 		bookServiceImp.deleteBook(id);
 	}
 
 	@GetMapping("/book/isbn/{isbn}")
-	public Book bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
-
-		Book bookByIsbn = new Book();
-		bookByIsbn = bookServiceImp.bookByIsbn(isbn);
-
-		return bookByIsbn;
+	public List<Book> bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
+		return bookServiceImp.bookByIsbn(isbn);
 	}
 
 	@GetMapping("/book/author/{author}")
@@ -198,13 +194,13 @@ public class BookController {
 	public List<Book> bookByTitle(@PathVariable(name = "title") String title) throws IOException {
 		return bookServiceImp.bookByTitle(title);
 	}
-  
+
 	@GetMapping("/book/category/{category}")
 	public List<Book> bookByCategory(@PathVariable(name = "category") String category) throws IOException {
 
 		return bookServiceImp.bookByCategory(category);
 	}
-  
+
 	@GetMapping("/books/user/{id}")
 	public List<Book> findBooksByIdUser(@PathVariable(name = "id") Long user) {
 		return bookServiceImp.findBooksByUser(userServiceImp.userById(user));
