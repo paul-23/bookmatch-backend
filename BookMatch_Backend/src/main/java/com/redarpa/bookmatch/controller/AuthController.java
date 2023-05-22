@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -85,7 +86,7 @@ public class AuthController {
 
 	// Signup to reguster a new user
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, @RequestParam(value = "image", required = false) MultipartFile imageFile) {
+	public ResponseEntity<?> registerUser(@RequestParam(value = "image", required = false) MultipartFile imageFile, @Valid @RequestPart("signup") SignupRequest signUpRequest) {
 
 	    // Checks email is available
 	    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -129,7 +130,7 @@ public class AuthController {
 
 			userServiceImpl.saveImage(userById);
 		} catch (Exception ex) {
-			System.out.println("Ocurrió un error al asignar la imagen por defecto: " + ex.getMessage());
+			System.out.println("Error saving user image:" + ex.getMessage());
 		}
 	}
 }
