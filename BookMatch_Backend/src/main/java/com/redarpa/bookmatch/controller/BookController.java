@@ -10,6 +10,11 @@ import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +30,7 @@ import com.redarpa.bookmatch.dao.IBookDAO;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.service.BookServiceImp;
 import com.redarpa.bookmatch.service.RatingServiceImp;
+import com.redarpa.bookmatch.service.UserDetailsImpl;
 import com.redarpa.bookmatch.service.UserServiceImp;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -144,12 +150,29 @@ public class BookController {
 			}
 		}
 	}
-
+		
+	
 	@PutMapping(value = "/book/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBook(@PathVariable(name = "id") Long id,
-			@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
-			throws IOException {
-		Book selectedBook = bookServiceImp.bookById(id);
+	        @RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("book") Book book)
+	        throws IOException {
+	    
+	    Book selectedBook = bookServiceImp.bookById(id);
+	    
+	    // Verificar si el usuario actual es el creador del libro
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+	    	UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+	        Long userId = userDetails.getId();
+	        
+	        // Comparar el ID del usuario actual con el ID del usuario del libro
+	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+	                && !selectedBook.getUser().getId_user().equals(userId)) {
+	            throw new AccessDeniedException("No tienes permiso para modificar este libro");
+	        }
+	    }
+	    
 		selectedBook.setAuthor(book.getAuthor());
 		selectedBook.setTitle(book.getTitle());
 		selectedBook.setIsbn(book.getIsbn());
@@ -170,11 +193,11 @@ public class BookController {
 				|| updatedBook.getCover_image().equals("")) {
 			saveCoverByBookISBN(updatedBook.getId_book(), updatedBook.getIsbn());
 		}
-
-		return updatedBook;
+	    
+	    return updatedBook;
 	}
 
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+
 	@DeleteMapping("/book/{id}")
 	public void deleteBook(@PathVariable(name = "id") Long id) {
 		bookServiceImp.deleteBook(id);
