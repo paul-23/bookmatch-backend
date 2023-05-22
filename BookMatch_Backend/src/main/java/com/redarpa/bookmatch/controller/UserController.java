@@ -23,6 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.redarpa.bookmatch.dto.User;
 import com.redarpa.bookmatch.service.UserServiceImp;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @RestController
 @RequestMapping("/api")
 public class UserController {

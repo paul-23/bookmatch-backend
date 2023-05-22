@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.redarpa.bookmatch.dto.Editorial;
 import com.redarpa.bookmatch.service.EditorialServiceImp;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @RestController
 @RequestMapping("/api")
 public class EditorialController {

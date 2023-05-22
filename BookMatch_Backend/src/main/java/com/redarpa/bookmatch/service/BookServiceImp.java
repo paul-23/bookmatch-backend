@@ -9,6 +9,11 @@ import com.redarpa.bookmatch.dao.IBookDAO;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.User;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 @Service
 public class BookServiceImp implements IBookService {
 
@@ -59,6 +64,12 @@ public class BookServiceImp implements IBookService {
 	public List<Book> bookByAuthor(String author) {
 		String formattedAuthor = "%" + author.toLowerCase() + "%";
 		return iBookDAO.findBookByAuthorLike(formattedAuthor);
+	}
+	
+	@Override
+	public List<Book> bookByCategory(String category) {
+		String formattedCategory = "%" + category.toLowerCase() + "%";
+		return iBookDAO.findBookByCategoryLike(formattedCategory);
 	}
 
 	@Override

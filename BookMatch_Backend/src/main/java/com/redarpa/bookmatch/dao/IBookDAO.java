@@ -7,9 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.User;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IBookDAO extends JpaRepository<Book, Long> {
 	public Book findBookByIsbn(String isbn);
 	public List<Book> findBookByTitleLike(String title);
 	public List<Book> findBookByAuthorLike(String author);
+	public List<Book> findBookByCategoryLike(String category);
 	public List<Book> findBooksByUser(User user);
 }

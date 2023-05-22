@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +51,8 @@ public class BookController {
 
 	@Autowired
 	IBookDAO iBookDAO;
-
+  
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/books")
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
@@ -172,6 +174,7 @@ public class BookController {
 		return updatedBook;
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/book/{id}")
 	public void deleteBook(@PathVariable(name = "id") Long id) {
 		bookServiceImp.deleteBook(id);
@@ -195,7 +198,13 @@ public class BookController {
 	public List<Book> bookByTitle(@PathVariable(name = "title") String title) throws IOException {
 		return bookServiceImp.bookByTitle(title);
 	}
+  
+	@GetMapping("/book/category/{category}")
+	public List<Book> bookByCategory(@PathVariable(name = "category") String category) throws IOException {
 
+		return bookServiceImp.bookByCategory(category);
+	}
+  
 	@GetMapping("/books/user/{id}")
 	public List<Book> findBooksByIdUser(@PathVariable(name = "id") Long user) {
 		return bookServiceImp.findBooksByUser(userServiceImp.userById(user));

@@ -16,13 +16,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * @author RedArpa - BookMatch
  *
  */
+
 @Entity
-@Table(name = "users")
+@Table(name = "users", // User users table
+		uniqueConstraints = { // Make username and email unique
+				@UniqueConstraint(columnNames = "username"), @UniqueConstraint(columnNames = "email") })
 public class User {
 
 	@Id
@@ -40,6 +44,9 @@ public class User {
 
 	@Column(name = "profile_image")
 	private byte[] profile_image;
+	
+	@Column(name = "role_id")
+	private String roleId;
 
 	@OneToMany
 	@JoinColumn(name = "id_book")
@@ -48,13 +55,19 @@ public class User {
 	@OneToMany
 	@JoinColumn(name = "id_message")
 	private List<Message> message;
-	
+
 	@OneToMany
 	@JoinColumn(name = "id_rating")
 	private List<Rating> rating;
 
 	public User() {
 
+	}
+	
+	public User(String username, String email, String pass) {
+		this.username = username;
+		this.email = email;
+		this.pass = pass;
 	}
 
 	public User(Long id_user, String username, String email, String pass, byte[] profile_image, List<Book> book,
@@ -137,6 +150,13 @@ public class User {
 
 	public void setRating(List<Rating> rating) {
 		this.rating = rating;
+	}
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 
 }

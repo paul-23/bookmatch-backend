@@ -5,6 +5,11 @@ import java.util.List;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.User;
 
+/**
+ * @author RedArpa - BookMatch
+ *
+ */
+
 public interface IBookService {
 	public List<Book> listAllBooks(); // List All
 
@@ -19,8 +24,11 @@ public interface IBookService {
 	public void deleteBook(Long id); // Delete a book
 
 	public List<Book> bookByTitle(String title); // List books by title
+	
+	public List<Book> bookByCategory(String category); // List books by category
+  
+	public List<Book> bookByAuthor(String author); // List books by author
 
-	public List<Book> bookByAuthor(String author); // Read books by author
-
-	List<Book> findBooksByUser(User user); // Read books of an User
+	List<Book> findBooksByUser(User user); // List books of an User
+  
 }
