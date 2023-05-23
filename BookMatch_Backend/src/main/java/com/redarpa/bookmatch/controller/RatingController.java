@@ -43,11 +43,8 @@ public class RatingController {
 	UserServiceImp userServiceImp;
 
 	@GetMapping("/ratings/average/{bookId}")
-	public Double getAverageRating(@PathVariable("bookId") Long bookId) {
-		Book book = new Book();
-		book.setId_book(bookId);
-		Double averageRating = ratingServiceImp.getAverageRating(book);
-
+	public Double getAverageRating(@PathVariable("bookId") Book bookId) {
+		Double averageRating = ratingServiceImp.getAverageRating(bookId);
 		if (averageRating == null) {
 			return 0.0;
 		}
@@ -55,10 +52,8 @@ public class RatingController {
 	}
 
 	@GetMapping("/ratings/{bookId}")
-	public List<Rating> getRatingsByBookId(@PathVariable("bookId") Long bookId) {
-		Book book = new Book();
-		book.setId_book(bookId);
-		return ratingServiceImp.getRatingsByBookId(book);
+	public List<Rating> getRatingsByBookId(@PathVariable("bookId") Book bookId) {
+		return ratingServiceImp.getRatingsByBookId(bookId);
 	}
 
 	@GetMapping("/ratings")
@@ -66,40 +61,25 @@ public class RatingController {
 		return ratingServiceImp.listAllRatings();
 	}
 
-	/*
-	 * @PostMapping("/ratings")
-	 * 
-	 * @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')") public Rating
-	 * saveRating(@RequestBody Rating rating) { return
-	 * ratingServiceImp.saveRating(rating); }
-	 */
-
 	@PostMapping("/ratings")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public Rating saveRating(@RequestBody Rating ratingRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
-        	UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            Long userId = userDetails.getId();
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public Rating saveRating(@RequestBody Rating ratingRequest) {
+		
+		User user = userServiceImp.userById(ratingRequest.getUserRating().getId_user());
+		Book book = bookServiceImp.bookById(ratingRequest.getBookRating().getId_book());
+		
+		if (ratingServiceImp.hasUserRated(user, book)) {
+			throw new IllegalStateException("El usuario ya ha realizado un rating para este libro.");
+		}
+				
+		Rating rating = new Rating();
+		rating.setUserRating(user);
+		rating.setBookRating(book);
+		rating.setRating(ratingRequest.getRating());
+		rating.setComment(ratingRequest.getComment());
 
-            User user = userServiceImp.userById(userId);
-            Book book = bookServiceImp.bookById(ratingRequest.getBookRating());
-
-            if (ratingServiceImp.hasUserRated(user.getId_user(), book.getId_book())) {
-                throw new IllegalStateException("El usuario ya ha realizado un rating");
-            }
-
-            Rating rating = new Rating();
-            rating.setUserRating(user.getId_user());
-            rating.setBookRating(book.getId_book());
-            rating.setRating(ratingRequest.getRating());
-            rating.setComment(ratingRequest.getComment());
-
-            return ratingServiceImp.saveRating(rating);
-        }
-
-        throw new AccessDeniedException("No se pudo determinar la identidad del usuario");
-    }
+		return ratingServiceImp.saveRating(rating);
+	}
 
 //
 //	@GetMapping("/ratings/{id}")

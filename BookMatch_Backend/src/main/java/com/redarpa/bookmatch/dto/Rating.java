@@ -25,11 +25,13 @@ public class Rating {
 	@Column(name = "id_rating")
 	private Long idRating;
 
-	@Column(name = "id_user_rating")
-	private Long userRating;
+	@ManyToOne
+	@JoinColumn(name = "id_user_rating")
+	private User userRating;
 
-	@Column(name = "id_book_rating")
-	private Long bookRating;
+	@ManyToOne
+	@JoinColumn(name = "id_book_rating")
+	private Book bookRating;
 
 	@Column(name = "rating")
 	private Long rating;
@@ -41,7 +43,7 @@ public class Rating {
 		
 	}
 
-	public Rating(Long idRating, Long userRating, Long bookRating, Long rating, String comment) {
+	public Rating(Long idRating, User userRating, Book bookRating, Long rating, String comment) {
 		this.idRating = idRating;
 		this.userRating = userRating;
 		this.bookRating = bookRating;
@@ -59,14 +61,14 @@ public class Rating {
 	/**
 	 * @return the userRating
 	 */
-	public Long getUserRating() {
+	public User getUserRating() {
 		return userRating;
 	}
 
 	/**
 	 * @return the bookRating
 	 */
-	public Long getBookRating() {
+	public Book getBookRating() {
 		return bookRating;
 	}
 
@@ -94,14 +96,14 @@ public class Rating {
 	/**
 	 * @param userRating the userRating to set
 	 */
-	public void setUserRating(Long userRating) {
+	public void setUserRating(User userRating) {
 		this.userRating = userRating;
 	}
 
 	/**
 	 * @param bookRating the bookRating to set
 	 */
-	public void setBookRating(Long bookRating) {
+	public void setBookRating(Book bookRating) {
 		this.bookRating = bookRating;
 	}
 

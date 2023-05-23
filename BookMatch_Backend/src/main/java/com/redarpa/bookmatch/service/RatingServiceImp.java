@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.redarpa.bookmatch.dao.IRatingDAO;
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
+import com.redarpa.bookmatch.dto.User;
 
 /**
  * @author RedArpa - BookMatch
@@ -58,9 +59,10 @@ public class RatingServiceImp implements IRatingService {
         return averageRating;
     }
 	
-	public boolean hasUserRated(Long userId, Long bookId) {
+	@Override
+	public boolean hasUserRated(User userId, Book bookId) {
         return iRatingDAO.existsByUserRatingAndBookRating(userId, bookId);
-    }
+	}
 	
 	@Override 
 	public List<Rating> getRatingsByBookId(Book book){
