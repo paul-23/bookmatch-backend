@@ -3,10 +3,8 @@ package com.redarpa.bookmatch.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +19,6 @@ import com.redarpa.bookmatch.dto.Rating;
 import com.redarpa.bookmatch.dto.User;
 import com.redarpa.bookmatch.service.BookServiceImp;
 import com.redarpa.bookmatch.service.RatingServiceImp;
-import com.redarpa.bookmatch.service.UserDetailsImpl;
 import com.redarpa.bookmatch.service.UserServiceImp;
 
 /**
@@ -29,6 +26,7 @@ import com.redarpa.bookmatch.service.UserServiceImp;
  *
  */
 
+@CrossOrigin(origins = "*", maxAge = 3600) // Allows requests from all origins with 1 hour cache
 @RestController
 @RequestMapping("/api")
 public class RatingController {
