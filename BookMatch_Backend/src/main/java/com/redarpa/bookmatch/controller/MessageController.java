@@ -3,6 +3,7 @@ package com.redarpa.bookmatch.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.redarpa.bookmatch.service.MessageServiceImp;
  *
  */
 
+@CrossOrigin(origins = "*", maxAge = 3600) // Allows requests from all origins with 1 hour cache
 @RestController
 @RequestMapping("/api")
 public class MessageController {
