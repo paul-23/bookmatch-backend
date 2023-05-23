@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.redarpa.bookmatch.dto.Book;
 import com.redarpa.bookmatch.dto.Rating;
+import com.redarpa.bookmatch.dto.User;
 
 /**
  * @author RedArpa - BookMatch
@@ -25,7 +26,6 @@ public interface IRatingService {
 
 	public List<Rating> getRatingsByBookId(Book book); //Get all rating for a specific book
 
-	
+	boolean hasUserRated(User userId, Book bookId);
 
-	
 }
