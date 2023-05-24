@@ -60,10 +60,10 @@ sent_date DATETIME
 
 INSERT INTO users (username, email, pass, role_id) VALUES ('admin', 'admin@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_ADMIN');
 INSERT INTO users (username, email, pass, role_id) VALUES ('juan123', 'juan@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_USER');
-INSERT INTO users (username, email, pass, role_id) VALUES ('maria456', 'maria@example.com', 'pass456', 'ROLE_USER');
-INSERT INTO users (username, email, pass, role_id) VALUES ('pedro789', 'pedro@example.com', 'pass789', 'ROLE_USER');
-INSERT INTO users (username, email, pass, role_id) VALUES ('laura101', 'laura@example.com', 'pass101', 'ROLE_USER');
-INSERT INTO users (username, email, pass, role_id) VALUES ('carlos2022', 'carlos@example.com', 'pass2022', 'ROLE_USER');
+INSERT INTO users (username, email, pass, role_id) VALUES ('maria456', 'maria@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_USER');
+INSERT INTO users (username, email, pass, role_id) VALUES ('pedro789', 'pedro@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_USER');
+INSERT INTO users (username, email, pass, role_id) VALUES ('laura101', 'laura@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_USER');
+INSERT INTO users (username, email, pass, role_id) VALUES ('carlos2022', 'carlos@example.com', '$2a$10$mR4MU5esBbUd6JWuwWKTA.tRy.jo4d4XRkgnamcOJfw5pJ8Ao/RDS', 'ROLE_USER');
 
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Alfaguara');
 INSERT INTO editorials (name_editorial) VALUES ('Editorial Planeta');
