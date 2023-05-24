@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.redarpa.bookmatch.service.UserDetailsServiceImpl;
 
@@ -65,17 +68,39 @@ public class WebSecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	// CORS Configuration
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.addAllowedOrigin("*");
+		configuration.addAllowedMethod("*");
+		configuration.addAllowedHeader("*");
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		
+		return source;
+	}
 
 	// Security Filter Chain
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeHttpRequests().requestMatchers("/auth/**").permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-				.requestMatchers("/api/**").authenticated().anyRequest().permitAll()
-				.and().exceptionHandling()
-				.authenticationEntryPoint(unauthorizedHandler).and().authenticationProvider(authenticationProvider())
-				.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.csrf().disable()
+		.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.cors()
+			.and()
+		.authorizeHttpRequests()
+			.requestMatchers("/auth/**").permitAll()
+			.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+			.requestMatchers("/api/**").authenticated().anyRequest().permitAll()
+		.and()
+		.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+		.and()
+		.authenticationProvider(authenticationProvider())
+		.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
