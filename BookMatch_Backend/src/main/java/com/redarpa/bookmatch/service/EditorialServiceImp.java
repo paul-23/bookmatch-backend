@@ -44,4 +44,9 @@ public class EditorialServiceImp implements IEditorialService {
 		iEditorialDAO.deleteById(id);
 	}
 
+	@Override
+	public Editorial editorialByName(String name) {
+		return iEditorialDAO.findEditorialByNameEditorial(name);
+	}
+
 }

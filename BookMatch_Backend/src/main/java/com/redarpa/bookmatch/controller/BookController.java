@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -221,6 +222,43 @@ public class BookController {
 		}
 		return "Book not deleted";
 	}
+	
+	@PutMapping(value = "/book/{id}/available")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public Book updateBookAvailability(@PathVariable(name = "id") Long id) {
+	    Book selectedBook = bookServiceImp.bookById(id);
+
+	    // Verificar si el usuario actual es el creador del libro
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+	        Long userId = userDetails.getId();
+
+	        // Comparar el ID del usuario actual con el ID del usuario del libro
+	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+	                && !selectedBook.getUser().getId_user().equals(userId)) {
+	            throw new AccessDeniedException("No tienes permiso para modificar este libro");
+	        }
+	    }
+
+	    selectedBook.setAviable(true);
+
+	    Book updatedBook = bookServiceImp.updateBook(selectedBook);
+
+	    return updatedBook;
+	}
+	
+	@PutMapping(value = "/book/{id}/notavailable")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public Book updateBookNotAviable(@PathVariable(name = "id") Long id) {
+		
+	    Book selectedBook = bookServiceImp.bookById(id);
+	    selectedBook.setAviable(false);
+	    Book updatedBook = bookServiceImp.updateBook(selectedBook);
+
+	    return updatedBook;
+	}
+
 
 	@GetMapping("/book/isbn/{isbn}")
 	public List<Book> bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {

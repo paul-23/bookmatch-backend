@@ -10,5 +10,5 @@ import com.redarpa.bookmatch.dto.Editorial;
  */
 
 public interface IEditorialDAO extends JpaRepository<Editorial, Long> {
-
+	public Editorial findEditorialByNameEditorial(String nameEditorial);
 }
