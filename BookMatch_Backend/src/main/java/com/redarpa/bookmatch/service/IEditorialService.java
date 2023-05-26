@@ -21,4 +21,6 @@ public interface IEditorialService {
 
 	public void deleteEditorial(Long id); // Delete an editorial
 	
+	public Editorial editorialByName(String name); // Find editorial by name
+	
 }

@@ -1,5 +1,6 @@
 package com.redarpa.bookmatch.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,11 @@ public class EditorialController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Editorial saveEditorial(@RequestBody Editorial editorial) {
 		return editorialServiceImp.saveEditorial(editorial);
+	}
+	
+	@GetMapping("/editorial/name/{name}")
+	public Editorial editorialByTitle(@PathVariable(name = "name") String name) throws IOException {
+		return editorialServiceImp.editorialByName(name);
 	}
 
 	@GetMapping("/editorials/{id}")

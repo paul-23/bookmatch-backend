@@ -30,7 +30,7 @@ public class Editorial {
 	private Long id_editorial;
 	
 	@Column(name = "name_editorial")
-	private String name_editorial;
+	private String nameEditorial;
 
 	@OneToMany
 	@JoinColumn(name = "id_book")
@@ -42,7 +42,7 @@ public class Editorial {
 
 	public Editorial(Long id_editorial, String name_editorial, List<Book> book) {
 		this.id_editorial = id_editorial;
-		this.name_editorial = name_editorial;
+		this.nameEditorial = name_editorial;
 		this.book = book;
 	}
 
@@ -55,11 +55,11 @@ public class Editorial {
 	}
 
 	public String getName_editorial() {
-		return name_editorial;
+		return nameEditorial;
 	}
 
 	public void setName_editorial(String name_editorial) {
-		this.name_editorial = name_editorial;
+		this.nameEditorial = name_editorial;
 	}
 
 	//Apunta al dto o al sql?
