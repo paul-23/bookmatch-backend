@@ -9,19 +9,28 @@ import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redarpa.bookmatch.dto.User;
+import com.redarpa.bookmatch.service.UserDetailsImpl;
 import com.redarpa.bookmatch.service.UserServiceImp;
 
 /**
@@ -36,22 +45,13 @@ public class UserController {
 
 	@Autowired
 	UserServiceImp userServiceImpl;
+	
+	@Autowired
+	PasswordEncoder encoder;
 
 	@GetMapping("/users")
 	public List<User> listUsers() {
 		return userServiceImpl.listAllUsers();
-	}
-
-	@PostMapping(value = "/user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public User saveUser(@RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") User user) throws IOException {
-		User user1;
-		if (imageFile != null && !imageFile.isEmpty()) {
-			user1 = userServiceImpl.saveUserWithImage(user, imageFile.getBytes());
-		} else {
-			user1 = userServiceImpl.saveUser(user);
-			saveImg(user1.getId_user());
-		}
-		return user1;
 	}
 	
 	@GetMapping("/user/{id}")
@@ -89,48 +89,77 @@ public class UserController {
 		}
 	}
 
-	@PutMapping("/user/image/{id}")
-	public User saveProfileImage(@PathVariable(name = "id") Long id, @RequestParam("image") MultipartFile imageFile)
-			throws IOException {
-
-		BufferedImage bufferedImage = ImageIO.read(imageFile.getInputStream());
-
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ImageIO.write(bufferedImage, "jpg", outputStream);
-		byte[] imageBytes = outputStream.toByteArray();
-
-		User userById = userServiceImpl.userById(id);
-		userById.setProfile_image(imageBytes);
-
-		userServiceImpl.saveImage(userById);
-
-		return userById;
-	}
-
-	@PutMapping(value = "/user/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public User updateUser(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") User user) throws IOException {
+	@PutMapping(value = "/user/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public User updateUser(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") String user) throws IOException {
 	    User selectedUser = userServiceImpl.userById(id);
-	    selectedUser.setUsername(user.getUsername());
-	    selectedUser.setEmail(user.getEmail());
-	    selectedUser.setPass(user.getPass());
 
-	    User updatedUser;
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+	        Long userId = userDetails.getId();
+
+	        // Comparar el ID del usuario actual con el ID del usuario del libro
+	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+	                && !selectedUser.getId_user().equals(userId)) {
+	            throw new AccessDeniedException("No tienes permiso para modificar este perfil");
+	        }
+	    }
+
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    User updatedUser = objectMapper.readValue(user, User.class);
+
+	    selectedUser.setUsername(updatedUser.getUsername());
+
 	    if (imageFile != null && !imageFile.isEmpty()) {
-	        updatedUser = userServiceImpl.updateUserWithImage(selectedUser, imageFile.getBytes());
+	        selectedUser = userServiceImpl.updateUserWithImage(selectedUser, imageFile.getBytes());
 	    } else {
-	        updatedUser = userServiceImpl.updateUser(selectedUser);
-	        saveImg(updatedUser.getId_user());
+	        selectedUser = userServiceImpl.updateUser(selectedUser);
+	        saveImg(selectedUser.getId_user());
 	    }
 
-	    if (updatedUser.getProfile_image() == null || updatedUser.getProfile_image().equals(null)
-	            || updatedUser.getProfile_image().equals("")) {
-	        saveImg(updatedUser.getId_user());
+	    if (selectedUser.getProfile_image() == null || selectedUser.getProfile_image().equals(null)
+	            || selectedUser.getProfile_image().equals("")) {
+	        saveImg(selectedUser.getId_user());
 	    }
+
+	    return selectedUser;
+	}
+	
+	@PutMapping(value = "/user/{id}/password")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public User updatePassword(@PathVariable(name = "id") Long id, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
+	    User selectedUser = userServiceImpl.userById(id);
+
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+	        Long userId = userDetails.getId();
+
+	        // Comparar el ID del usuario actual con el ID del usuario seleccionado
+	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+	                && !selectedUser.getId_user().equals(userId)) {
+	            throw new AccessDeniedException("No tienes permiso para modificar este perfil");
+	        }
+	    }
+
+	    // Verificar si la contraseña anterior coincide
+	    if (!encoder.matches(oldPassword, selectedUser.getPass())) {
+	        throw new IllegalArgumentException("La contraseña anterior no coincide");
+	    }
+
+	    // Encriptar y actualizar la nueva contraseña
+	    String newPasswordHash = encoder.encode(newPassword);
+	    selectedUser.setPass(newPasswordHash);
+
+	    User updatedUser = userServiceImpl.updateUser(selectedUser);
 
 	    return updatedUser;
 	}
 
+
 	@DeleteMapping("/user/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteUser(@PathVariable(name = "id") Long id) {
 		userServiceImpl.deleteUser(id);
 	}

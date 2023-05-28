@@ -183,8 +183,8 @@ public class BookController {
 	}
 
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@DeleteMapping("/book/{id}")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public String deleteBook(@PathVariable(name = "id") Long id) {
 
 		Book selectedBook = bookServiceImp.bookById(id);
