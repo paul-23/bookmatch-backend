@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redarpa.bookmatch.dao.IUserDAO;
 import com.redarpa.bookmatch.dto.JwtResponse;
@@ -91,9 +89,9 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@RequestParam(value = "image", required = false) MultipartFile imageFile, @Valid @RequestPart("signup") String signUpRequestBdy) throws IOException {
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		SignupRequest signUpRequest = objectMapper.readValue(signUpRequestBdy, SignupRequest.class);
-	    
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    SignupRequest signUpRequest = objectMapper.readValue(signUpRequestBdy, SignupRequest.class);
+
 	    // Checks email is available
 	    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 	        return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
@@ -114,11 +112,25 @@ public class AuthController {
 	            saveImg(user.getId_user());
 	        }
 
-	        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+	        // Authenticate the user
+	        Authentication authentication = authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
+
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        String jwt = jwtUtils.generateJwtToken(authentication);
+
+	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+	        String roles = userDetails.getAuthorities().stream().findFirst()
+	            .map(GrantedAuthority::getAuthority)
+	            .orElse("");
+
+	        return ResponseEntity.ok(
+	            new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
 	    } catch (IOException ex) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error saving user image: " + ex.getMessage()));
 	    }
 	}
+
 	
 	public void saveImg(Long id) {
 
