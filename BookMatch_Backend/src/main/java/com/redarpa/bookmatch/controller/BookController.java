@@ -104,24 +104,6 @@ public class BookController {
 		response.getOutputStream().write(bookOptional.getCover_image());
 	}
 
-	/* @PutMapping("/book/image/{id}")
-	public Book saveCoverByBookId(@PathVariable(name = "id") Long id, @RequestParam("image") MultipartFile imageFile)
-			throws IOException {
-
-		BufferedImage bufferedImage = ImageIO.read(imageFile.getInputStream());
-
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ImageIO.write(bufferedImage, "jpg", outputStream);
-		byte[] imageBytes = outputStream.toByteArray();
-
-		Book bookById = bookServiceImp.bookById(id);
-		bookById.setCover_image(imageBytes);
-
-		bookServiceImp.saveImage(bookById);
-
-		return bookById;
-	} */
-
 	public void saveCoverByBookISBN(Long id, String isbn) {
 	    try {
 	        String url = OPEN_LIBRARY_API.replace("ISBN_NUMBER", isbn);
@@ -191,18 +173,18 @@ public class BookController {
 
 	    if (imageFile != null && !imageFile.isEmpty()) {
 	        byte[] imageBytes = imageFile.getBytes();
-	        updatedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
+	        selectedBook = bookServiceImp.updateBookWithImage(updatedBook, imageBytes);
 	    } else {
 	        updatedBook = bookServiceImp.updateBook(selectedBook);
-	        saveCoverByBookISBN(updatedBook.getId_book(), updatedBook.getIsbn());
+	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 	    }
 
 	    if (updatedBook.getCover_image() == null || updatedBook.getCover_image().equals(null)
 	            || updatedBook.getCover_image().equals("")) {
-	        saveCoverByBookISBN(updatedBook.getId_book(), updatedBook.getIsbn());
+	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 	    }
 
-	    return updatedBook;
+	    return selectedBook;
 	}
 
 
