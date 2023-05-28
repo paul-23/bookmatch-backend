@@ -173,18 +173,13 @@ public class BookController {
 
 	    if (imageFile != null && !imageFile.isEmpty()) {
 	        byte[] imageBytes = imageFile.getBytes();
-	        selectedBook = bookServiceImp.updateBookWithImage(updatedBook, imageBytes);
+	        updatedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
 	    } else {
 	        updatedBook = bookServiceImp.updateBook(selectedBook);
-	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
+	        saveCoverByBookISBN(updatedBook.getId_book(), updatedBook.getIsbn());
 	    }
 
-	    if (updatedBook.getCover_image() == null || updatedBook.getCover_image().equals(null)
-	            || updatedBook.getCover_image().equals("")) {
-	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
-	    }
-
-	    return selectedBook;
+	    return updatedBook;
 	}
 
 
