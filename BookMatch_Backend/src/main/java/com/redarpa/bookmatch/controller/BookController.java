@@ -173,13 +173,13 @@ public class BookController {
 
 	    if (imageFile != null && !imageFile.isEmpty()) {
 	        byte[] imageBytes = imageFile.getBytes();
-	        updatedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
+	        selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
 	    } else {
-	        updatedBook = bookServiceImp.updateBook(selectedBook);
-	        saveCoverByBookISBN(updatedBook.getId_book(), updatedBook.getIsbn());
+	    	selectedBook = bookServiceImp.updateBook(selectedBook);
+	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 	    }
 
-	    return updatedBook;
+	    return selectedBook;
 	}
 
 
