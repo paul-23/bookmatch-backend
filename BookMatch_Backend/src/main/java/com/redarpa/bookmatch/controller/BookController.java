@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -184,7 +185,7 @@ public class BookController {
 
 	@DeleteMapping("/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-	public String deleteBook(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<String> deleteBook(@PathVariable(name = "id") Long id) {
 
 		Book selectedBook = bookServiceImp.bookById(id);
 
@@ -196,13 +197,13 @@ public class BookController {
 			// Comparar el ID del usuario actual con el ID del usuario del libro
 			if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
 					&& !selectedBook.getUser().getId_user().equals(userId)) {
-				throw new AccessDeniedException("No tienes permiso para modificar este libro");
+				throw new AccessDeniedException("You do not have permission to delete this book");
 			} else {
 				bookServiceImp.deleteBook(id);
-				return "Bookd deleted succesfully";
+				return ResponseEntity.ok("Book deleted successfully");
 			}
 		}
-		return "Book not deleted";
+		throw new AccessDeniedException("You do not have permission to delete this book");
 	}
 	
 	@PutMapping(value = "/book/{id}/available")
