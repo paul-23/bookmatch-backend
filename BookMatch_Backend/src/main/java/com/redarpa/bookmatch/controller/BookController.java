@@ -4,7 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -185,7 +187,7 @@ public class BookController {
 
 	@DeleteMapping("/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-	public ResponseEntity<String> deleteBook(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<Map<String, Object>> deleteBook(@PathVariable(name = "id") Long id) {
 
 		Book selectedBook = bookServiceImp.bookById(id);
 
@@ -200,7 +202,11 @@ public class BookController {
 				throw new AccessDeniedException("You do not have permission to delete this book");
 			} else {
 				bookServiceImp.deleteBook(id);
-				return ResponseEntity.ok("Book deleted successfully");
+				Map<String, Object> response = new HashMap<>();
+		        response.put("success", true);
+		        response.put("message", "Book deleted successfully");
+
+		        return ResponseEntity.ok(response);
 			}
 		}
 		throw new AccessDeniedException("You do not have permission to delete this book");
