@@ -47,13 +47,11 @@ public class UserController {
 	PasswordEncoder encoder;
 
 	@GetMapping("/users")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public List<User> listUsers() {
 		return userServiceImpl.listAllUsers();
 	}
 	
 	@GetMapping("/user/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public User userById(@PathVariable(name = "id") Long id) {
 
 		User userById = new User();
