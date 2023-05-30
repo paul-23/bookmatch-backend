@@ -112,12 +112,10 @@ public class UserController {
 	        selectedUser = userServiceImpl.updateUserWithImage(selectedUser, imageFile.getBytes());
 	    } else {
 	        selectedUser = userServiceImpl.updateUser(selectedUser);
-	        saveImg(selectedUser.getId_user());
-	    }
-
-	    if (selectedUser.getProfile_image() == null || selectedUser.getProfile_image().equals(null)
-	            || selectedUser.getProfile_image().equals("")) {
-	        saveImg(selectedUser.getId_user());
+	        if (selectedUser.getProfile_image() == null || selectedUser.getProfile_image().equals(null)
+		            || selectedUser.getProfile_image().equals("")) {
+		        saveImg(selectedUser.getId_user());
+		    }
 	    }
 
 	    return selectedUser;
