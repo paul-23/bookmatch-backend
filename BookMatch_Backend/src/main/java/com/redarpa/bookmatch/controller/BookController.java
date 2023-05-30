@@ -67,23 +67,23 @@ public class BookController {
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
 	}
-	
+
 	@PostMapping(value = "/book")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile,
-	                     @RequestPart("book") String bookJson) throws IOException {
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    Book book = objectMapper.readValue(bookJson, Book.class);
+			@RequestPart("book") String bookJson) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		Book book = objectMapper.readValue(bookJson, Book.class);
 
-	    if (imageFile != null && !imageFile.isEmpty()) {
-	        byte[] imageBytes = imageFile.getBytes();
-	        Book savedBook = bookServiceImp.saveBookWithImage(book, imageBytes);
-	        return savedBook;
-	    } else {
-	        Book savedBook = bookServiceImp.saveBook(book);
-	        saveCoverByBookISBN(savedBook.getId_book(), savedBook.getIsbn());
-	        return savedBook;
-	    }
+		if (imageFile != null && !imageFile.isEmpty()) {
+			byte[] imageBytes = imageFile.getBytes();
+			Book savedBook = bookServiceImp.saveBookWithImage(book, imageBytes);
+			return savedBook;
+		} else {
+			Book savedBook = bookServiceImp.saveBook(book);
+			saveCoverByBookISBN(savedBook.getId_book(), savedBook.getIsbn());
+			return savedBook;
+		}
 	}
 
 	@GetMapping("/book/{id}")
@@ -107,83 +107,84 @@ public class BookController {
 	}
 
 	public void saveCoverByBookISBN(Long id, String isbn) {
-	    try {
-	        String url = OPEN_LIBRARY_API.replace("ISBN_NUMBER", isbn);
-	        URL imageUrl = new URL(url);
-	        BufferedImage bufferedImage = ImageIO.read(imageUrl);
+		try {
+			String url = OPEN_LIBRARY_API.replace("ISBN_NUMBER", isbn);
+			URL imageUrl = new URL(url);
+			BufferedImage bufferedImage = ImageIO.read(imageUrl);
 
-	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	        ImageIO.write(bufferedImage, "jpg", outputStream);
-	        byte[] imageBytes = outputStream.toByteArray();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, "jpg", outputStream);
+			byte[] imageBytes = outputStream.toByteArray();
 
-	        Book bookById = bookServiceImp.bookById(id);
-	        bookById.setCover_image(imageBytes);
+			Book bookById = bookServiceImp.bookById(id);
+			bookById.setCover_image(imageBytes);
 
-	        bookServiceImp.saveImage(bookById);
+			bookServiceImp.saveImage(bookById);
 
-	    } catch (Exception e) {
-	        try {
-	            String defaultImagePath = "default_cover.jpg";
+		} catch (Exception e) {
+			try {
+				String defaultImagePath = "default_cover.jpg";
 
-	            BufferedImage defaultImage = ImageIO.read(getClass().getClassLoader().getResource(defaultImagePath));
+				BufferedImage defaultImage = ImageIO.read(getClass().getClassLoader().getResource(defaultImagePath));
 
-	            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	            ImageIO.write(defaultImage, "jpg", outputStream);
-	            byte[] defaultImageBytes = outputStream.toByteArray();
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				ImageIO.write(defaultImage, "jpg", outputStream);
+				byte[] defaultImageBytes = outputStream.toByteArray();
 
-	            Book bookById = bookServiceImp.bookById(id);
-	            bookById.setCover_image(defaultImageBytes);
+				Book bookById = bookServiceImp.bookById(id);
+				bookById.setCover_image(defaultImageBytes);
 
-	            bookServiceImp.saveImage(bookById);
-	        } catch (Exception ex) {
-	            System.out.println("Ocurrió un error al asignar la imagen por defecto: " + ex.getMessage());
-	        }
-	    }
+				bookServiceImp.saveImage(bookById);
+			} catch (Exception ex) {
+				System.out.println("Ocurrió un error al asignar la imagen por defecto: " + ex.getMessage());
+			}
+		}
 	}
 
 	@PutMapping(value = "/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBook(@PathVariable(name = "id") Long id,
-	                       @RequestPart(value = "image", required = false) MultipartFile imageFile,
-	                       @RequestPart("book") String bookJson) throws IOException {
+			@RequestPart(value = "image", required = false) MultipartFile imageFile,
+			@RequestPart("book") String bookJson) throws IOException {
 
-	    Book selectedBook = bookServiceImp.bookById(id);
+		Book selectedBook = bookServiceImp.bookById(id);
 
-	    // Verificar si el usuario actual es el creador del libro
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
-	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-	        Long userId = userDetails.getId();
+		// Verificar si el usuario actual es el creador del libro
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			Long userId = userDetails.getId();
 
-	        // Comparar el ID del usuario actual con el ID del usuario del libro
-	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-	                && !selectedBook.getUser().getId_user().equals(userId)) {
-	            throw new AccessDeniedException("No tienes permiso para modificar este libro");
-	        }
-	    }
+			// Comparar el ID del usuario actual con el ID del usuario del libro
+			if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+					&& !selectedBook.getUser().getId_user().equals(userId)) {
+				throw new AccessDeniedException("No tienes permiso para modificar este libro");
+			}
+		}
 
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    Book updatedBook = objectMapper.readValue(bookJson, Book.class);
+		ObjectMapper objectMapper = new ObjectMapper();
+		Book updatedBook = objectMapper.readValue(bookJson, Book.class);
 
-	    selectedBook.setAuthor(updatedBook.getAuthor());
-	    selectedBook.setTitle(updatedBook.getTitle());
-	    selectedBook.setIsbn(updatedBook.getIsbn());
-	    selectedBook.setCategory(updatedBook.getCategory());
-	    selectedBook.setAviable(updatedBook.getAviable());
-	    selectedBook.setEditorial(updatedBook.getEditorial());
-	    selectedBook.setDescription(updatedBook.getDescription());
+		selectedBook.setAuthor(updatedBook.getAuthor());
+		selectedBook.setTitle(updatedBook.getTitle());
+		selectedBook.setIsbn(updatedBook.getIsbn());
+		selectedBook.setCategory(updatedBook.getCategory());
+		selectedBook.setAviable(updatedBook.getAviable());
+		selectedBook.setEditorial(updatedBook.getEditorial());
+		selectedBook.setDescription(updatedBook.getDescription());
 
-	    if (imageFile != null && !imageFile.isEmpty()) {
-	        byte[] imageBytes = imageFile.getBytes();
-	        selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
-	    } else if (selectedBook.getCover_image() == null) {
-	    	selectedBook = bookServiceImp.updateBook(selectedBook);
-	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
-	    }
+		if (imageFile != null && !imageFile.isEmpty()) {
+			byte[] imageBytes = imageFile.getBytes();
+			selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
+		} else {
+			selectedBook = bookServiceImp.updateBook(selectedBook);
+			if (selectedBook.getCover_image() == null) {
+				saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
+			}
+		}
 
-	    return selectedBook;
+		return selectedBook;
 	}
-
 
 	@DeleteMapping("/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -203,51 +204,50 @@ public class BookController {
 			} else {
 				bookServiceImp.deleteBook(id);
 				Map<String, Object> response = new HashMap<>();
-		        response.put("success", true);
-		        response.put("message", "Book deleted successfully");
+				response.put("success", true);
+				response.put("message", "Book deleted successfully");
 
-		        return ResponseEntity.ok(response);
+				return ResponseEntity.ok(response);
 			}
 		}
 		throw new AccessDeniedException("You do not have permission to delete this book");
 	}
-	
+
 	@PutMapping(value = "/book/{id}/available")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBookAvailability(@PathVariable(name = "id") Long id) {
-	    Book selectedBook = bookServiceImp.bookById(id);
+		Book selectedBook = bookServiceImp.bookById(id);
 
-	    // Verificar si el usuario actual es el creador del libro
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
-	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-	        Long userId = userDetails.getId();
+		// Verificar si el usuario actual es el creador del libro
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			Long userId = userDetails.getId();
 
-	        // Comparar el ID del usuario actual con el ID del usuario del libro
-	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-	                && !selectedBook.getUser().getId_user().equals(userId)) {
-	            throw new AccessDeniedException("No tienes permiso para modificar este libro");
-	        }
-	    }
+			// Comparar el ID del usuario actual con el ID del usuario del libro
+			if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
+					&& !selectedBook.getUser().getId_user().equals(userId)) {
+				throw new AccessDeniedException("No tienes permiso para modificar este libro");
+			}
+		}
 
-	    selectedBook.setAviable(true);
+		selectedBook.setAviable(true);
 
-	    Book updatedBook = bookServiceImp.updateBook(selectedBook);
+		Book updatedBook = bookServiceImp.updateBook(selectedBook);
 
-	    return updatedBook;
+		return updatedBook;
 	}
-	
+
 	@PutMapping(value = "/book/{id}/notavailable")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBookNotAviable(@PathVariable(name = "id") Long id) {
-		
-	    Book selectedBook = bookServiceImp.bookById(id);
-	    selectedBook.setAviable(false);
-	    Book updatedBook = bookServiceImp.updateBook(selectedBook);
 
-	    return updatedBook;
+		Book selectedBook = bookServiceImp.bookById(id);
+		selectedBook.setAviable(false);
+		Book updatedBook = bookServiceImp.updateBook(selectedBook);
+
+		return updatedBook;
 	}
-
 
 	@GetMapping("/book/isbn/{isbn}")
 	public List<Book> bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
