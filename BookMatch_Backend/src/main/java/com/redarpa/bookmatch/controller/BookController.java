@@ -176,7 +176,7 @@ public class BookController {
 	    if (imageFile != null && !imageFile.isEmpty()) {
 	        byte[] imageBytes = imageFile.getBytes();
 	        selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
-	    } else {
+	    } else if (selectedBook.getCover_image() == null) {
 	    	selectedBook = bookServiceImp.updateBook(selectedBook);
 	        saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 	    }
