@@ -56,13 +56,13 @@ public class AuthController {
 
 	@Autowired
 	IUserDAO userRepository;
-	
+
 	@Autowired
 	PasswordEncoder encoder;
 
 	@Autowired
 	JwtUtils jwtUtils;
-	
+
 	@Autowired
 	UserServiceImp userServiceImpl;
 
@@ -77,9 +77,7 @@ public class AuthController {
 		String jwt = jwtUtils.generateJwtToken(authentication);
 
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		String roles = userDetails.getAuthorities().stream().findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElse("");
+		String roles = userDetails.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority).orElse("");
 
 		return ResponseEntity.ok(
 				new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
@@ -87,51 +85,51 @@ public class AuthController {
 
 	// Signup to reguster a new user
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@RequestParam(value = "image", required = false) MultipartFile imageFile, @Valid @RequestPart("signup") String signUpRequestBdy) throws IOException {
+	public ResponseEntity<?> registerUser(@RequestParam(value = "image", required = false) MultipartFile imageFile,
+			@Valid @RequestPart("signup") String signUpRequestBdy) throws IOException {
 
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    SignupRequest signUpRequest = objectMapper.readValue(signUpRequestBdy, SignupRequest.class);
+		ObjectMapper objectMapper = new ObjectMapper();
+		SignupRequest signUpRequest = objectMapper.readValue(signUpRequestBdy, SignupRequest.class);
 
-	    // Checks email is available
-	    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-	        return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
-	    }
+		// Checks email is available
+		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+		}
 
-	    try {
-	        // Create new user's account
-	        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
-	                encoder.encode(signUpRequest.getPassword()));
+		try {
+			// Create new user's account
+			User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
+					encoder.encode(signUpRequest.getPassword()));
 
-	        // Sets roles and saves user
-	        user.setRoleId("ROLE_USER");
-	        userRepository.save(user);
+			// Sets roles and saves user
+			user.setRoleId("ROLE_USER");
+			userRepository.save(user);
 
-	        if (imageFile != null && !imageFile.isEmpty()) {
-	            userServiceImpl.saveUserWithImage(user, imageFile.getBytes());
-	        } else {
-	            saveImg(user.getId_user());
-	        }
+			if (imageFile != null && !imageFile.isEmpty()) {
+				userServiceImpl.saveUserWithImage(user, imageFile.getBytes());
+			} else {
+				saveImg(user.getId_user());
+			}
 
-	        // Authenticate the user
-	        Authentication authentication = authenticationManager.authenticate(
-	            new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
+			// Authenticate the user
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
 
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
-	        String jwt = jwtUtils.generateJwtToken(authentication);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			String jwt = jwtUtils.generateJwtToken(authentication);
 
-	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-	        String roles = userDetails.getAuthorities().stream().findFirst()
-	            .map(GrantedAuthority::getAuthority)
-	            .orElse("");
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			String roles = userDetails.getAuthorities().stream().findFirst().map(GrantedAuthority::getAuthority)
+					.orElse("");
 
-	        return ResponseEntity.ok(
-	            new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
-	    } catch (IOException ex) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse("Error saving user image: " + ex.getMessage()));
-	    }
+			return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(),
+					userDetails.getEmail(), roles));
+		} catch (IOException ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error saving user image: " + ex.getMessage()));
+		}
 	}
 
-	
 	public void saveImg(Long id) {
 
 		try {

@@ -46,11 +46,20 @@ public class UserController {
 	@Autowired
 	PasswordEncoder encoder;
 
+	/**
+	 * Get all users
+	 * @return
+	 */
 	@GetMapping("/users")
 	public List<User> listUsers() {
 		return userServiceImpl.listAllUsers();
 	}
 	
+	/**
+	 * Get user by Id
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/user/{id}")
 	public User userById(@PathVariable(name = "id") Long id) {
 
@@ -66,6 +75,10 @@ public class UserController {
 		return userById;
 	}
 
+	/**
+	 * If user does not provide an image, default one will be assigned
+	 * @param id
+	 */
 	public void saveImg(Long id) {
 
 		try {
@@ -86,6 +99,14 @@ public class UserController {
 		}
 	}
 
+	/**
+	 * Edit user info
+	 * @param id
+	 * @param imageFile
+	 * @param user
+	 * @return
+	 * @throws IOException
+	 */
 	@PutMapping(value = "/user/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public User updateUser(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") String user) throws IOException {
@@ -96,7 +117,7 @@ public class UserController {
 	        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 	        Long userId = userDetails.getId();
 
-	        // Comparar el ID del usuario actual con el ID del usuario del libro
+	        // Compares current user ID with book user ID
 	        if (!authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
 	                && !selectedUser.getId_user().equals(userId)) {
 	            throw new AccessDeniedException("No tienes permiso para modificar este perfil");
@@ -121,6 +142,13 @@ public class UserController {
 	    return selectedUser;
 	}
 	
+	/**
+	 * Change user password
+	 * @param id
+	 * @param oldPassword
+	 * @param newPassword
+	 * @return
+	 */
 	@PutMapping(value = "/user/{id}/password")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public User updatePassword(@PathVariable(name = "id") Long id, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
@@ -152,7 +180,10 @@ public class UserController {
 	    return updatedUser;
 	}
 
-
+	/**
+	 * Delete user by Id
+	 * @param id
+	 */
 	@DeleteMapping("/user/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteUser(@PathVariable(name = "id") Long id) {

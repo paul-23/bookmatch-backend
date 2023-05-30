@@ -40,6 +40,11 @@ public class RatingController {
 	@Autowired
 	UserServiceImp userServiceImp;
 
+	/**
+	 * Get rating average by book Id
+	 * @param bookId
+	 * @return
+	 */
 	@GetMapping("/ratings/average/{bookId}")
 	public Double getAverageRating(@PathVariable("bookId") Book bookId) {
 		Double averageRating = ratingServiceImp.getAverageRating(bookId);
@@ -49,6 +54,11 @@ public class RatingController {
 		return averageRating;
 	}
 
+	/**
+	 * Get ratings by book Id
+	 * @param bookId
+	 * @return
+	 */
 	@GetMapping("/ratings/{bookId}")
 	public List<Rating> getRatingsByBookId(@PathVariable("bookId") Book bookId) {
 		return ratingServiceImp.getRatingsByBookId(bookId);
@@ -59,6 +69,11 @@ public class RatingController {
 		return ratingServiceImp.listAllRatings();
 	}
 
+	/**
+	 * Add new rating
+	 * @param ratingRequest
+	 * @return
+	 */
 	@PostMapping("/ratings")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Rating saveRating(@RequestBody Rating ratingRequest) {
@@ -90,6 +105,12 @@ public class RatingController {
 //		return ratingById;
 //	}
 
+	/**
+	 * Update rating by Id
+	 * @param id
+	 * @param rating
+	 * @return
+	 */
 	@PutMapping("/ratings/{id}")
 	public Rating updateRating(@PathVariable(name = "id") Long id, @RequestBody Rating rating) {
 
@@ -106,6 +127,10 @@ public class RatingController {
 		return updatedRating;
 	}
 
+	/**
+	 * Delete rating by Id
+	 * @param id
+	 */
 	@DeleteMapping("/ratings/{id}")
 	public void deleteBook(@PathVariable(name = "id") Long id) {
 		ratingServiceImp.deleteRating(id);

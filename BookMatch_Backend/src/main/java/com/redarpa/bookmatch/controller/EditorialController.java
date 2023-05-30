@@ -31,22 +31,42 @@ public class EditorialController {
 	@Autowired
 	EditorialServiceImp editorialServiceImp;
 
+	/**
+	 * Get all editorials
+	 * @return
+	 */
 	@GetMapping("/editorials")
 	public List<Editorial> listEditorial() {
 		return editorialServiceImp.listAllEditorial();
 	}
 
+	/**
+	 * Add new editorial
+	 * @param editorial
+	 * @return the editorial added
+	 */
 	@PostMapping("/editorials")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Editorial saveEditorial(@RequestBody Editorial editorial) {
 		return editorialServiceImp.saveEditorial(editorial);
 	}
 	
+	/**
+	 * Get editorial by name
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 */
 	@GetMapping("/editorial/name/{name}")
 	public Editorial editorialByTitle(@PathVariable(name = "name") String name) throws IOException {
 		return editorialServiceImp.editorialByName(name);
 	}
 
+	/**
+	 * Get editorial by id
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/editorials/{id}")
 	public Editorial editorialById(@PathVariable(name = "id") Long id) {
 
@@ -59,6 +79,12 @@ public class EditorialController {
 		return editorialById;
 	}
 
+	/**
+	 * Edit editorial info
+	 * @param id
+	 * @param editorial
+	 * @return
+	 */
 	@PutMapping("/editorials/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Editorial updateEditorial(@PathVariable(name = "id") Long id, @RequestBody Editorial editorial) {
@@ -78,6 +104,10 @@ public class EditorialController {
 		return updatedEditorial;
 	}
 
+	/**
+	 * Delete editorial by id
+	 * @param id
+	 */
 	@DeleteMapping("/editorial/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteEditorial(@PathVariable(name = "id") Long id) {

@@ -63,11 +63,22 @@ public class BookController {
 	@Autowired
 	IBookDAO iBookDAO;
 
+	/**
+	 * Get all books
+	 * @return List of books
+	 */
 	@GetMapping("/books")
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
 	}
 
+	/**
+	 * Add new book 
+	 * @param imageFile
+	 * @param bookJson
+	 * @return data of the added book
+	 * @throws IOException
+	 */
 	@PostMapping(value = "/book")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book saveBook(@RequestParam(value = "image", required = false) MultipartFile imageFile,
@@ -86,6 +97,12 @@ public class BookController {
 		}
 	}
 
+	/**
+	 * Get a book by Id
+	 * @param id
+	 * @return Book by id
+	 * @throws IOException
+	 */
 	@GetMapping("/book/{id}")
 	public Book bookById(@PathVariable(name = "id") Long id) throws IOException {
 
@@ -100,12 +117,22 @@ public class BookController {
 		return bookById;
 	}
 
+	/**
+	 * Get cover image by book Id
+	 * @param id
+	 * @param response
+	 * @throws IOException
+	 */
 	@GetMapping("book/image/{id}")
 	public void getCoverByBookId(@PathVariable Long id, HttpServletResponse response) throws IOException {
 		Book bookOptional = bookServiceImp.bookById(id);
 		response.getOutputStream().write(bookOptional.getCover_image());
 	}
 
+	/**
+	 * Method that controls if user not provided cover image and search for an image from Openlibrary API.
+	 * If the image cannot be found at Openlibrary, load a default image
+	 */
 	public void saveCoverByBookISBN(Long id, String isbn) {
 		try {
 			String url = OPEN_LIBRARY_API.replace("ISBN_NUMBER", isbn);
@@ -141,6 +168,14 @@ public class BookController {
 		}
 	}
 
+	/**
+	 * Edit book information
+	 * @param id
+	 * @param imageFile
+	 * @param bookJson
+	 * @return
+	 * @throws IOException
+	 */
 	@PutMapping(value = "/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBook(@PathVariable(name = "id") Long id,
@@ -186,6 +221,11 @@ public class BookController {
 		return selectedBook;
 	}
 
+	/**
+	 * Delete book by its Id
+	 * @param id
+	 * @return
+	 */
 	@DeleteMapping("/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public ResponseEntity<Map<String, Object>> deleteBook(@PathVariable(name = "id") Long id) {
@@ -213,6 +253,11 @@ public class BookController {
 		throw new AccessDeniedException("You do not have permission to delete this book");
 	}
 
+	/**
+	 * Change book to available state, only when logged with admin user or the owner's user
+	 * @param id
+	 * @return
+	 */
 	@PutMapping(value = "/book/{id}/available")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBookAvailability(@PathVariable(name = "id") Long id) {
@@ -238,6 +283,11 @@ public class BookController {
 		return updatedBook;
 	}
 
+	/**
+	 * Change book to not available state, only when logged with admin user or the owner's user
+	 * @param id
+	 * @return
+	 */
 	@PutMapping(value = "/book/{id}/notavailable")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBookNotAviable(@PathVariable(name = "id") Long id) {
@@ -249,27 +299,56 @@ public class BookController {
 		return updatedBook;
 	}
 
+	/**
+	 * Find book by ISBN
+	 * @param isbn
+	 * @return
+	 * @throws IOException
+	 */
 	@GetMapping("/book/isbn/{isbn}")
 	public List<Book> bookByIsbn(@PathVariable(name = "isbn") String isbn) throws IOException {
 		return bookServiceImp.bookByIsbn(isbn);
 	}
 
+	/**
+	 * Find books by author
+	 * @param author
+	 * @return
+	 * @throws IOException
+	 */
 	@GetMapping("/book/author/{author}")
 	public List<Book> bookByAuthor(@PathVariable(name = "author") String author) throws IOException {
 		return bookServiceImp.bookByAuthor(author);
 	}
 
+	/**
+	 * Find books by title
+	 * @param title
+	 * @return
+	 * @throws IOException
+	 */
 	@GetMapping("/book/title/{title}")
 	public List<Book> bookByTitle(@PathVariable(name = "title") String title) throws IOException {
 		return bookServiceImp.bookByTitle(title);
 	}
 
+	/**
+	 * Find books by category
+	 * @param category
+	 * @return
+	 * @throws IOException
+	 */
 	@GetMapping("/book/category/{category}")
 	public List<Book> bookByCategory(@PathVariable(name = "category") String category) throws IOException {
 
 		return bookServiceImp.bookByCategory(category);
 	}
 
+	/**
+	 * Get books by user Id
+	 * @param user
+	 * @return
+	 */
 	@GetMapping("/books/user/{id}")
 	public List<Book> findBooksByIdUser(@PathVariable(name = "id") Long user) {
 		return bookServiceImp.findBooksByUser(userServiceImp.userById(user));
