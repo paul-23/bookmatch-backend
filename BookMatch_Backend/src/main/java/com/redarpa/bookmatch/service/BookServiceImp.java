@@ -3,6 +3,10 @@ package com.redarpa.bookmatch.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.redarpa.bookmatch.dao.IBookDAO;
@@ -87,5 +91,11 @@ public class BookServiceImp implements IBookService {
 		book.setCover_image(imageBytes);
 		return iBookDAO.save(book);
 	}
+	
+	public Page<Book> listAllBooks(Pageable pageable) {
+        Sort sortByIdDesc = Sort.by(Sort.Direction.DESC, "id_book");
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortByIdDesc);
+        return iBookDAO.findAll(pageable);
+    }
 
 }
