@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,6 +73,19 @@ public class BookController {
 	public List<Book> listBooks() {
 		return bookServiceImp.listAllBooks();
 	}
+	
+	@GetMapping("/books")
+	public Page<Book> listBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "8") int size) {
+		PageRequest pageable = PageRequest.of(page, size);
+		return bookServiceImp.listAllBooks(pageable);
+	}
+	
+	@GetMapping("/books/latest")
+    public List<Book> getLatestBooks() {
+        PageRequest pageable = PageRequest.of(0, 4);
+        Page<Book> bookPage = bookServiceImp.listAllBooks(pageable);
+        return bookPage.getContent();
+    }
 
 	/**
 	 * Add new book 
