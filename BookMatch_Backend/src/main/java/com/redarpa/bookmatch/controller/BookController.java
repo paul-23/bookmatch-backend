@@ -74,8 +74,8 @@ public class BookController {
 		return bookServiceImp.listAllBooks();
 	}
 	
-	@GetMapping("/books")
-	public Page<Book> listBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "8") int size) {
+	@GetMapping("/listbooks")
+	public Page<Book> listOrderedBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "8") int size) {
 		PageRequest pageable = PageRequest.of(page, size);
 		return bookServiceImp.listAllBooks(pageable);
 	}
