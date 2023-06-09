@@ -93,9 +93,7 @@ public class BookServiceImp implements IBookService {
 	}
 	
 	public Page<Book> listAllBooks(Pageable pageable) {
-        Sort sortByIdDesc = Sort.by(Sort.Direction.DESC, "id_book");
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortByIdDesc);
         return iBookDAO.findAll(pageable);
     }
-
+	
 }

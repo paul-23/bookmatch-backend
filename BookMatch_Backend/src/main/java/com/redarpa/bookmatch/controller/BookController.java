@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -75,14 +76,18 @@ public class BookController {
 	}
 	
 	@GetMapping("/listbooks")
-	public Page<Book> listOrderedBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "8") int size) {
-		PageRequest pageable = PageRequest.of(page, size);
-		return bookServiceImp.listAllBooks(pageable);
+	public List<Book> listOrderedBooks(@RequestParam(defaultValue = "0") int page,
+	                                                   @RequestParam(defaultValue = "8") int size) {
+		Sort sort = Sort.by("idBook").descending();
+	    PageRequest pageable = PageRequest.of(page, size, sort);
+	    Page<Book> bookPage = bookServiceImp.listAllBooks(pageable);
+	    return bookPage.getContent();
 	}
 	
 	@GetMapping("/books/latest")
     public List<Book> getLatestBooks() {
-        PageRequest pageable = PageRequest.of(0, 4);
+		Sort sort = Sort.by("idBook").descending();
+        PageRequest pageable = PageRequest.of(0, 4, sort);
         Page<Book> bookPage = bookServiceImp.listAllBooks(pageable);
         return bookPage.getContent();
     }
