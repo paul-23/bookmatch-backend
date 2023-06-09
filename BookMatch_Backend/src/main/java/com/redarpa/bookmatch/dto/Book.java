@@ -29,7 +29,8 @@ public class Book {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id_book;
+	@Column(name = "id_book")
+	private Long idBook;
 	
 	@Column(name = "author")
 	private String author;
@@ -81,7 +82,7 @@ public class Book {
 	
 	public Book(Long id_book, String author, String title, String isbn, String category, byte[] cover_image,
 			boolean aviable, String description, User user, Editorial editorial, List<Rating> rating) {
-		this.id_book = id_book;
+		this.idBook = id_book;
 		this.author = author;
 		this.title = title;
 		this.isbn = isbn;
@@ -119,11 +120,11 @@ public class Book {
 	}
 
 	public Long getId_book() {
-		return id_book;
+		return idBook;
 	}
 
 	public void setId_book(Long id_book) {
-		this.id_book = id_book;
+		this.idBook = id_book;
 	}
 
 	public String getAuthor() {
