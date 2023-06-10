@@ -84,6 +84,15 @@ public class BookController {
 	    return bookPage.getContent();
 	}
 	
+	@GetMapping("/listbooks/available")
+	public List<Book> listOrderedAvailableBooks(@RequestParam(defaultValue = "0") int page,
+	                                                   @RequestParam(defaultValue = "8") int size) {
+		Sort sort = Sort.by("idBook").descending();
+	    PageRequest pageable = PageRequest.of(page, size, sort);
+	    Page<Book> bookPage = bookServiceImp.findByAvailableTrue(pageable);
+	    return bookPage.getContent();
+	}
+	
 	@GetMapping("/books/latest")
     public List<Book> getLatestBooks() {
 		Sort sort = Sort.by("idBook").descending();
