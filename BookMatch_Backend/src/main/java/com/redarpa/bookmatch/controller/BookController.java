@@ -87,9 +87,9 @@ public class BookController {
 	@GetMapping("/books/latest")
     public List<Book> getLatestBooks() {
 		Sort sort = Sort.by("idBook").descending();
-        PageRequest pageable = PageRequest.of(0, 4, sort);
-        Page<Book> bookPage = bookServiceImp.listAllBooks(pageable);
-        return bookPage.getContent();
+	    PageRequest pageable = PageRequest.of(0, 4, sort);
+	    Page<Book> bookPage = bookServiceImp.findByAvailableTrue(pageable);
+	    return bookPage.getContent();
     }
 
 	/**
