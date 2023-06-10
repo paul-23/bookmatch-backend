@@ -96,4 +96,8 @@ public class BookServiceImp implements IBookService {
         return iBookDAO.findAll(pageable);
     }
 	
+	public Page<Book> findByAvailableTrue(Pageable pageable) {
+		return iBookDAO.findByAviableTrue(pageable);
+	}
+	
 }
