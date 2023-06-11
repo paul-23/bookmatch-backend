@@ -243,6 +243,13 @@ public class BookController {
 		} else {
 			saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 		}
+		
+		if (imageFile != null && !imageFile.isEmpty()) {
+			byte[] imageBytes = imageFile.getBytes();
+			selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
+		} else if (imageFile != null && imageFile.getOriginalFilename().equals("DELETE_IMAGE")) {
+			saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
+		}
 
 		return selectedBook;
 	}
