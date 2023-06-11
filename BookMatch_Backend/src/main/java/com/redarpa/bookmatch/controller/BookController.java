@@ -236,13 +236,6 @@ public class BookController {
 		selectedBook.setAviable(updatedBook.getAviable());
 		selectedBook.setEditorial(updatedBook.getEditorial());
 		selectedBook.setDescription(updatedBook.getDescription());
-
-		if (imageFile != null && !imageFile.isEmpty()) {
-			byte[] imageBytes = imageFile.getBytes();
-			selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
-		} else {
-			saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
-		}
 		
 		if (imageFile != null && !imageFile.isEmpty()) {
 			byte[] imageBytes = imageFile.getBytes();
