@@ -241,6 +241,7 @@ public class BookController {
 			byte[] imageBytes = imageFile.getBytes();
 			selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
 		} else if (imageFile != null && imageFile.getOriginalFilename().equals("DELETE_IMAGE")) {
+			selectedBook = bookServiceImp.updateBook(selectedBook);
 			saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 		}
 
