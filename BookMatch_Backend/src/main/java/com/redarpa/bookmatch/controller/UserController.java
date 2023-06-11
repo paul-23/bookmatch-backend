@@ -109,7 +109,10 @@ public class UserController {
 	 */
 	@PutMapping(value = "/user/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-	public User updateUser(@PathVariable(name = "id") Long id, @RequestParam(value = "image", required = false) MultipartFile imageFile, @RequestPart("user") String user) throws IOException {
+	public User updateUser(@PathVariable(name = "id") Long id,
+			@RequestParam(value = "deleteImage", required = false, defaultValue = "false") boolean deleteImage,
+			@RequestParam(value = "image", required = false) MultipartFile imageFile,
+			@RequestPart("user") String user) throws IOException {
 	    User selectedUser = userServiceImpl.userById(id);
 
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -131,14 +134,13 @@ public class UserController {
 
 	    if (imageFile != null && !imageFile.isEmpty()) {
 	        selectedUser = userServiceImpl.updateUserWithImage(selectedUser, imageFile.getBytes());
-	    } else {
+	    } else if (deleteImage) {
 	        selectedUser = userServiceImpl.updateUser(selectedUser);
-	        if (selectedUser.getProfile_image() == null || selectedUser.getProfile_image().equals(null)
-		            || selectedUser.getProfile_image().equals("")) {
-		        saveImg(selectedUser.getId_user());
-		    }
+		    saveImg(selectedUser.getId_user());
+	    } else {
+	    	selectedUser = userServiceImpl.updateUser(selectedUser);
 	    }
-
+	    
 	    return selectedUser;
 	}
 	

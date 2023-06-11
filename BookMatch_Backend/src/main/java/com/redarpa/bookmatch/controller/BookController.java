@@ -208,6 +208,7 @@ public class BookController {
 	@PutMapping(value = "/book/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public Book updateBook(@PathVariable(name = "id") Long id,
+			@RequestParam(value = "deleteCover", required = false, defaultValue = "false") boolean deleteCover,
 			@RequestPart(value = "image", required = false) MultipartFile imageFile,
 			@RequestPart("book") String bookJson) throws IOException {
 
@@ -237,14 +238,14 @@ public class BookController {
 		selectedBook.setEditorial(updatedBook.getEditorial());
 		selectedBook.setDescription(updatedBook.getDescription());
 		
-		if (imageFile != null && !imageFile.isEmpty()) {
+		if (imageFile != null && !imageFile.isEmpty() && !deleteCover) {
 			byte[] imageBytes = imageFile.getBytes();
 			selectedBook = bookServiceImp.updateBookWithImage(selectedBook, imageBytes);
+		} else if (deleteCover) {
+			selectedBook = bookServiceImp.updateBook(selectedBook);
+			saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
 		} else {
 			selectedBook = bookServiceImp.updateBook(selectedBook);
-			if (selectedBook.getCover_image() == null) {
-				saveCoverByBookISBN(selectedBook.getId_book(), selectedBook.getIsbn());
-			}
 		}
 
 		return selectedBook;
