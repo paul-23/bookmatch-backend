@@ -7,7 +7,7 @@ WORKDIR /app
 COPY target/*.war /app/app.war
 
 # Exponer el puerto definido por Render
-EXPOSE 8080
+EXPOSE $PORT
 
 # Comando de inicio
-CMD ["java", "-Dserver.port=8080", "-jar", "app.war"]
+CMD ["java", "-Dserver.port=$PORT", "-jar", "app.war"]
