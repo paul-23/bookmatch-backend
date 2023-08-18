@@ -1,13 +1,19 @@
-FROM openjdk:17-jdk-alpine
+FROM maven:3.8.4-openjdk-17 AS build
 
-# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar el archivo .war desde el contexto de construcción al directorio de trabajo
-COPY target/*.war /app/app.war
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Exponer el puerto definido por Render
+COPY src ./src
+RUN mvn package -DskipTests
+
+FROM openjdk:17-jdk-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.war /app/app.war
+
 EXPOSE $PORT
 
-# Comando de inicio
 CMD ["java", "-Dserver.port=$PORT", "-jar", "app.war"]
